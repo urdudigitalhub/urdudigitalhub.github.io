@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ur" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Turn Urdu or English text into a PDF using your browser's built-in Print to PDF feature. Text stays on your device.">
+<meta name="author" content="UrduDigitalHub">
+<meta name="robots" content="index,follow">
+<title>Urdu Text to PDF | UrduDigitalHub</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f2f5fb;color:#17202a;font-family:Arial,"Noto Naskh Arabic",sans-serif;line-height:1.8}
+header{background:linear-gradient(120deg,#102d50,#174f78);color:#fff;text-align:center;padding:18px}
+.brand{display:inline-flex;align-items:center;gap:12px;color:#fff;text-decoration:none}.brand img{width:54px;height:54px}.brand h1{font-size:25px;margin:0}.brand p{margin:0;font-size:13px}
+nav{background:#fff;text-align:center;padding:12px}nav a{color:#175b88;text-decoration:none;font-weight:700;margin:0 9px}
+main{width:min(900px,94%);margin:28px auto}.card{background:#fff;padding:24px;border-radius:14px;box-shadow:0 4px 18px #0000000d;margin-bottom:18px}
+h2{margin-top:0;color:#17466d}label{display:block;font-weight:700;margin:12px 0 6px}
+input,select,textarea{width:100%;border:1px solid #b9cbe0;border-radius:9px;padding:11px;background:#fbfcff;font:16px Arial,sans-serif}
+textarea{min-height:330px;resize:vertical;direction:rtl;text-align:right;line-height:2.1;font-family:Arial,"Noto Naskh Arabic",sans-serif}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+button{border:0;border-radius:9px;padding:12px 19px;color:#fff;background:#1769aa;font-size:15px;font-weight:700;cursor:pointer;margin:10px 6px 0 0}.secondary{background:#66717d}
+.note{color:#59636e;font-size:14px}footer{text-align:center;color:#66717d;padding:10px 15px 28px;font-size:13px}
+@media(max-width:600px){.card{padding:16px}.row{grid-template-columns:1fr}header h1{font-size:21px}button{width:100%;margin:7px 0}}
+@media print{
+ body{background:#fff;color:#000}.no-print,header,nav,footer{display:none!important}
+ main{width:100%;margin:0}.card{box-shadow:none;border:0;padding:0;margin:0}
+ #printHeading{display:block!important;margin:0 0 12px;font-size:18pt}
+ #printContent{display:block!important;border:0;padding:0;min-height:0;height:auto;overflow:visible;resize:none;background:#fff;color:#000;font-size:12pt;line-height:2;white-space:pre-wrap;direction:rtl;text-align:right}
+ @page{size:A4;margin:18mm}
+}
+</style>
+</head>
+<body>
+<header><a class="brand" href="index.html"><img src="logo.svg" alt="UrduDigitalHub"><span><h1>UrduDigitalHub</h1><p>Urdu Digital Tools &amp; Typing Platform</p></span></a></header>
+<nav><a href="index.html">⌂ Home</a><a href="about.html">About Us</a><a href="contact.html">Contact Us</a></nav>
+<main>
+<section class="card no-print">
+<h2>Urdu Text to PDF</h2>
+<p>Apna Urdu ya English matn likhein ya paste karein, phir browser ke Print option se PDF save kar lein.</p>
+<div class="row">
+<div><label for="docTitle">Document title</label><input id="docTitle" type="text" value="Urdu Document" maxlength="100"></div>
+<div><label for="fontSize">Text size</label><select id="fontSize"><option value="12">Normal (12 pt)</option><option value="14">Large (14 pt)</option><option value="16">Extra large (16 pt)</option><option value="18">Very large (18 pt)</option></select></div>
+</div>
+<label for="sourceText">Your text</label>
+<textarea id="sourceText" placeholder="اپنا اردو متن یہاں لکھیں یا پیسٹ کریں..." spellcheck="true"></textarea>
+<button id="makePdf" type="button">Create / Save PDF</button><button id="clearText" class="secondary" type="button">Clear text</button>
+<p class="note">Button dabane ke baad Print window khulegi. Printer/Destination mein “Save as PDF” select karein. Text aapke browser mein hi rehta hai.</p>
+</section>
+<section class="card" id="printArea">
+<h2 id="printHeading" style="display:none">Urdu Document</h2>
+<div id="printContent" style="display:none;white-space:pre-wrap;direction:rtl;text-align:right"></div>
+<p class="note no-print">PDF banane se pehle apna matn upar wale box mein tayyar karein.</p>
+</section>
+<section class="card no-print">
+<h2>Privacy &amp; usage</h2>
+<p class="note">This tool uses your browser's built-in print function. No external PDF library, font package, or remote conversion service is used. Your text is not uploaded to UrduDigitalHub.</p>
+</section>
+</main>
+<footer class="no-print">© 2026 UrduDigitalHub. All rights reserved.</footer>
+<script>
+(function(){
+const input=document.getElementById('sourceText');
+const title=document.getElementById('docTitle');
+const size=document.getElementById('fontSize');
+const heading=document.getElementById('printHeading');
+const content=document.getElementById('printContent');
+document.getElementById('makePdf').addEventListener('click',function(){
+ if(!input.value.trim()){alert('Please enter or paste some text first.');input.focus();return;}
+ heading.textContent=title.value.trim()||'Urdu Document';
+ content.textContent=input.value;
+ content.style.display='block';
+ content.style.fontSize=size.value+'pt';
+ document.title=(title.value.trim()||'Urdu Document')+' - UrduDigitalHub';
+ window.print();
+});
+document.getElementById('clearText').addEventListener('click',function(){input.value='';input.focus();});
+window.addEventListener('afterprint',function(){content.style.display='none';heading.style.display='none';document.title='Urdu Text to PDF | UrduDigitalHub';});
+})();
+</script>
+</body>
+</html>

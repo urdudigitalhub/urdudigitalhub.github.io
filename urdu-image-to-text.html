@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ur" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Extract Urdu and English text from clear images with browser-based OCR. Image files are processed on your device.">
+<meta name="author" content="UrduDigitalHub">
+<meta name="robots" content="index,follow">
+<title>Urdu Image to Text OCR | UrduDigitalHub</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f2f5fb;color:#17202a;font-family:Arial,"Noto Naskh Arabic",sans-serif;line-height:1.8}
+header{background:linear-gradient(120deg,#102d50,#174f78);color:#fff;text-align:center;padding:18px}
+.brand{display:inline-flex;align-items:center;gap:12px;color:#fff;text-decoration:none}.brand img{width:54px;height:54px}.brand h1{font-size:25px;margin:0}.brand p{margin:0;font-size:13px}
+nav{background:#fff;text-align:center;padding:12px}nav a{color:#175b88;text-decoration:none;font-weight:700;margin:0 9px}
+main{width:min(900px,94%);margin:28px auto}.card{background:#fff;padding:24px;border-radius:14px;box-shadow:0 4px 18px #0000000d;margin-bottom:18px}
+h2{margin-top:0;color:#17466d}label{display:block;font-weight:700;margin:12px 0 6px}
+input[type=file],textarea{width:100%;border:1px solid #b9cbe0;border-radius:9px;padding:12px;background:#fbfcff;font:16px Arial,sans-serif}
+textarea{min-height:240px;resize:vertical;direction:rtl;text-align:right;line-height:2;font-family:Arial,"Noto Naskh Arabic",sans-serif}
+.preview{display:block;max-width:100%;max-height:360px;margin:12px auto;border-radius:9px;object-fit:contain}
+button{border:0;border-radius:9px;padding:12px 19px;color:#fff;background:#1769aa;font-size:15px;font-weight:700;cursor:pointer;margin:10px 6px 0 0}
+button:disabled{opacity:.55;cursor:not-allowed}.green{background:#16834f}.gray{background:#66717d}
+.status{padding:10px 12px;background:#eef4fb;border-radius:8px;min-height:44px;white-space:pre-wrap}.note{color:#59636e;font-size:14px}
+footer{text-align:center;color:#66717d;padding:10px 15px 28px;font-size:13px}
+@media(max-width:600px){.card{padding:16px}header h1{font-size:21px}button{width:100%;margin:7px 0}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+</head>
+<body>
+<header><a class="brand" href="index.html"><img src="logo.svg" alt="UrduDigitalHub"><span><h1>UrduDigitalHub</h1><p>Urdu Digital Tools &amp; Typing Platform</p></span></a></header>
+<nav><a href="index.html">⌂ Home</a><a href="about.html">About Us</a><a href="contact.html">Contact Us</a></nav>
+<main>
+<section class="card">
+<h2>Urdu Image to Text (OCR)</h2>
+<p>Urdu ya English likhai wali image select karein. OCR us image se text read karne ki koshish karega.</p>
+<label for="imageFile">Choose an image</label>
+<input id="imageFile" type="file" accept="image/png,image/jpeg,image/webp,image/bmp">
+<img id="imagePreview" class="preview" alt="Selected image preview" hidden>
+<button id="ocrBtn" type="button">Extract Text</button>
+<div id="status" class="status" role="status" aria-live="polite">Choose a clear image to begin.</div>
+</section>
+<section class="card">
+<label for="ocrResult">Recognized text (review and edit before copying)</label>
+<textarea id="ocrResult" spellcheck="false" placeholder="Recognized Urdu or English text will appear here..."></textarea>
+<button id="copyBtn" class="green" type="button">Copy Text</button>
+<button id="clearBtn" class="gray" type="button">Clear</button>
+<p class="note">Best results: use a sharp, well-lit image with straight, printed text. Handwriting, decorative fonts, low resolution and complex page layouts may reduce accuracy. Always proofread the result.</p>
+</section>
+<section class="card">
+<h2>Privacy &amp; open-source notices</h2>
+<p class="note">The selected image is processed in your browser and is not uploaded to UrduDigitalHub. The OCR engine is Tesseract.js, distributed under the Apache License 2.0. Its script and Urdu/English language data are downloaded from third-party hosts, so an internet connection is required. The Tesseract language data repository is also Apache-2.0 licensed.</p>
+<p class="note"><a href="https://github.com/naptha/tesseract.js" target="_blank" rel="noopener">Tesseract.js project and license</a> · <a href="https://github.com/tesseract-ocr/tessdata" target="_blank" rel="noopener">Official Tesseract language data and license</a>.</p>
+</section>
+</main>
+<footer>© 2026 UrduDigitalHub. All rights reserved.</footer>
+<script>
+(function(){
+const fileInput=document.getElementById('imageFile');
+const preview=document.getElementById('imagePreview');
+const result=document.getElementById('ocrResult');
+const status=document.getElementById('status');
+const runButton=document.getElementById('ocrBtn');
+let previewUrl='';
+fileInput.addEventListener('change',function(){
+ const file=fileInput.files&&fileInput.files[0];
+ if(previewUrl)URL.revokeObjectURL(previewUrl);
+ previewUrl='';
+ if(!file){preview.hidden=true;preview.removeAttribute('src');return;}
+ if(!file.type.startsWith('image/')){status.textContent='Please select a valid image file.';fileInput.value='';preview.hidden=true;return;}
+ previewUrl=URL.createObjectURL(file);preview.src=previewUrl;preview.hidden=false;
+ status.textContent='Image ready. Press Extract Text.';
+});
+runButton.addEventListener('click',async function(){
+ const file=fileInput.files&&fileInput.files[0];
+ if(!file){status.textContent='Please choose an image first.';return;}
+ if(!window.Tesseract){status.textContent='OCR library could not load. Check your internet connection and reload.';return;}
+ runButton.disabled=true;status.textContent='Starting Urdu and English OCR…';
+ try{
+  const workerPath='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/worker.min.js';
+  const corePath='https://cdn.jsdelivr.net/npm/tesseract.js-core@5/tesseract-core.wasm.js';
+  const langPath='https://tessdata.projectnaptha.com/4.0.0';
+  const response=await Tesseract.recognize(file,'urd+eng',{
+   workerPath:workerPath,corePath:corePath,langPath:langPath,
+   logger:function(message){
+    if(message.status==='recognizing text')status.textContent='Recognizing text… '+Math.round((message.progress||0)*100)+'%';
+    else if(message.status)status.textContent=message.status;
+   }
+  });
+  result.value=response.data.text||'';
+  status.textContent=result.value.trim()?'OCR finished. Please proofread the recognized text.':'No readable text found. Try a clearer image.';
+ }catch(error){console.error(error);status.textContent='OCR could not process this image. Try a smaller, clearer JPG or PNG image.';}
+ finally{runButton.disabled=false;}
+});
+document.getElementById('copyBtn').addEventListener('click',async function(){
+ if(!result.value){status.textContent='There is no text to copy yet.';return;}
+ try{await navigator.clipboard.writeText(result.value);status.textContent='Text copied.';}
+ catch(error){result.focus();result.select();status.textContent='Press Ctrl+C to copy the selected text.';}
+});
+document.getElementById('clearBtn').addEventListener('click',function(){
+ fileInput.value='';result.value='';preview.hidden=true;preview.removeAttribute('src');
+ if(previewUrl)URL.revokeObjectURL(previewUrl);previewUrl='';
+ status.textContent='Choose a clear image to begin.';
+});
+window.addEventListener('beforeunload',function(){if(previewUrl)URL.revokeObjectURL(previewUrl);});
+})();
+</script>
+</body>
+</html>
