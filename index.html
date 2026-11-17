@@ -39,6 +39,7 @@ button:hover{filter:brightness(1.07);transform:translateY(-1px)}button:disabled{
 .note{color:#59636e;line-height:1.8;margin:12px 0 0;font-size:14px}
 .ad-slot{min-height:250px;border:2px dashed #c8d2df;border-radius:12px;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#8a96a5;margin-bottom:18px;padding:14px}
 .ad-slot strong{font-size:13px;letter-spacing:1px;color:#9aa5b2}.ad-slot span{font-size:12px;margin-top:8px}
+.ad-slot-tall{min-height:518px}
 .sidebar-card{background:#fff;border-radius:13px;padding:18px;margin-bottom:18px;box-shadow:0 4px 16px #0000000b}
 .sidebar-card h2{font-size:18px;margin:0 0 12px;color:#17466d}.social-links{display:grid;gap:9px}
 .social-links a{display:block;padding:10px 12px;border-radius:8px;background:#f1f5fb;color:#175b88;text-decoration:none;font-weight:600}.social-links a:hover{background:#e4eefb}
@@ -112,9 +113,9 @@ body.tool-page .tool-panel.active-tool{display:block!important}
 </section>
 <section class="card"><h2>About UrduDigitalHub</h2><p class="note">UrduDigitalHub Urdu users ke liye muft online tools provide karta hai, jin mein Unicode to InPage converter, InPage to Unicode converter, Urdu keyboard, typing practice, word counter, text cleaner, Urdu Lafzon Ka Safar word puzzle aur B_Fighter original fighting game shamil hain. Converter ka text aapke browser mein process hota hai.</p></section>
 </main><aside class="sidebar">
-<div class="ad-slot"><strong>ADVERTISEMENT</strong><span>Ad space 1</span></div><div class="ad-slot"><strong>ADVERTISEMENT</strong><span>Ad space 2</span></div><div class="ad-slot"><strong>ADVERTISEMENT</strong><span>Ad space 3</span></div>
+<div class="ad-slot"><strong>ADVERTISEMENT</strong><span>Ad space 1</span></div>
 <div class="sidebar-card"><h2>Quick Tools</h2><div class="social-links"><a href="tool.html?tool=urduKeyboard">Urdu Keyboard</a><a href="tool.html?tool=typingTest">Typing Practice</a><a href="tool.html?tool=wordCounter">Word Counter</a><a href="tool.html?tool=textCleaner">Text Cleaner</a><a href="tool.html?tool=reverseTool">InPage to Unicode</a></div></div>
-
+<div class="ad-slot"><strong>ADVERTISEMENT</strong><span>Ad space 2</span></div>
 <div class="sidebar-card game-zone" id="urduWordGame">
 <h2>🎮 Urdu Lafzon Ka Safar</h2>
 <p class="game-intro">Bikhre hue Urdu haroof ko jor kar sahi lafz banayein. Har sahi jawab par 10 points!</p>
@@ -124,7 +125,10 @@ body.tool-page .tool-panel.active-tool{display:block!important}
 <input class="game-answer" id="gameAnswer" type="text" maxlength="20" placeholder="Sahi Urdu lafz likhein">
 <div class="game-message" id="gameMessage" aria-live="polite">Haroof ko jor kar jawab likhein.</div>
 <div class="game-buttons"><button class="game-check" id="gameCheck" type="button">Jawab Check</button><button class="game-next" id="gameNext" type="button" disabled>Agla Lafz</button></div>
-</div></aside></div>
+</div>
+<div class="ad-slot"><strong>ADVERTISEMENT</strong><span>Ad space 3</span></div>
+<div class="ad-slot ad-slot-tall"><strong>ADVERTISEMENT</strong><span>Ad space 4 · Tall vertical ad</span></div>
+</aside></div>
 <footer>© 2026 UrduDigitalHub. All rights reserved.</footer>
 <script>
 const input=document.getElementById('urduText'),preview=document.getElementById('preview'),output=document.getElementById('inpageOutput'),resultCard=document.getElementById('resultCard'),moreText=document.getElementById('moreText');
