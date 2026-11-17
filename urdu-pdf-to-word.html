@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ur" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Extract selectable text from a PDF and save it as an editable Word-compatible document. Files are processed in your browser.">
+<meta name="author" content="UrduDigitalHub">
+<meta name="robots" content="index,follow">
+<title>Urdu PDF to Word Converter | UrduDigitalHub</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg">
+<style>
+:root{color-scheme:light;--navy:#102d50;--blue:#1769aa;--bg:#f2f5fb;--ink:#17202a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,"Noto Naskh Arabic",sans-serif;line-height:1.7}
+header{background:linear-gradient(120deg,#102d50,#174f78);color:#fff;text-align:center;padding:18px}
+.brand{display:inline-flex;align-items:center;gap:12px;color:#fff;text-decoration:none}.brand img{width:54px;height:54px}.brand h1{font-size:25px;margin:0}.brand p{margin:0;font-size:13px}
+nav{background:#fff;text-align:center;padding:12px}nav a{color:#175b88;text-decoration:none;font-weight:700;margin:0 9px}
+main{width:min(900px,94%);margin:28px auto}.card{background:#fff;padding:24px;border-radius:14px;box-shadow:0 4px 18px #0000000d;margin-bottom:18px}
+h2{margin-top:0;color:#17466d}label{display:block;font-weight:700;margin:12px 0 6px}
+input[type=file],textarea{width:100%;border:1px solid #b9cbe0;border-radius:9px;padding:12px;background:#fbfcff;font:16px Arial,sans-serif}
+textarea{min-height:300px;resize:vertical;direction:rtl;text-align:right;line-height:2;font-family:Arial,"Noto Naskh Arabic",sans-serif}
+button{border:0;border-radius:9px;padding:12px 19px;color:#fff;background:var(--blue);font-size:15px;font-weight:700;cursor:pointer;margin:10px 6px 0 0}
+button:disabled{opacity:.55;cursor:not-allowed}.green{background:#16834f}.gray{background:#66717d}
+.note{color:#59636e;font-size:14px}.status{padding:10px 12px;background:#eef4fb;border-radius:8px;min-height:44px;white-space:pre-wrap}
+footer{text-align:center;color:#66717d;padding:10px 15px 28px;font-size:13px}
+@media(max-width:600px){.card{padding:16px}header h1{font-size:21px}button{width:100%;margin:7px 0}}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body>
+<header><a class="brand" href="index.html"><img src="logo.svg" alt="UrduDigitalHub"><span><h1>UrduDigitalHub</h1><p>Urdu Digital Tools &amp; Typing Platform</p></span></a></header>
+<nav><a href="index.html">⌂ Home</a><a href="about.html">About Us</a><a href="contact.html">Contact Us</a></nav>
+<main>
+<section class="card">
+<h2>Urdu PDF to Word Converter</h2>
+<p>PDF se selectable text nikaal kar editable Word-compatible document banayein. Urdu aur English text dono supported hain.</p>
+<label for="pdfFile">Select PDF file</label>
+<input id="pdfFile" type="file" accept="application/pdf,.pdf">
+<p class="note">Aapki PDF file browser mein process hoti hai; hamare server par upload nahi hoti. Scanned/image-only PDF ke liye OCR tool istemal karein.</p>
+<button id="extractBtn" type="button">Extract PDF Text</button>
+<div id="status" class="status" role="status" aria-live="polite">Please choose a PDF file to begin.</div>
+</section>
+<section class="card">
+<label for="result">Extracted text (you can edit it before downloading)</label>
+<textarea id="result" spellcheck="false" placeholder="Extracted Urdu/English text will appear here..."></textarea>
+<button id="downloadBtn" class="green" type="button" disabled>Download Word File (.doc)</button>
+<button id="clearBtn" class="gray" type="button">Clear</button>
+<p class="note">Note: This tool extracts text only. Original PDF layout, images, tables and exact font formatting may not be preserved. Results depend on how the PDF was created.</p>
+</section>
+<section class="card">
+<h2>Privacy &amp; software notice</h2>
+<p class="note">Your selected document is read locally in your browser. PDF.js is an open-source PDF parser distributed under the Apache License 2.0. Its library is loaded from cdnjs, so an internet connection is required to use this converter. UrduDigitalHub's page code and interface are independently written for this website.</p>
+<p class="note">PDF.js license: <a href="https://github.com/mozilla/pdf.js/blob/master/LICENSE" target="_blank" rel="noopener">Apache License 2.0</a>.</p>
+</section>
+</main>
+<footer>© 2026 UrduDigitalHub. All rights reserved.</footer>
+<script>
+(function(){
+const fileInput=document.getElementById('pdfFile');
+const extractBtn=document.getElementById('extractBtn');
+const downloadBtn=document.getElementById('downloadBtn');
+const clearBtn=document.getElementById('clearBtn');
+const output=document.getElementById('result');
+const status=document.getElementById('status');
+if(window.pdfjsLib){pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';}
+function setStatus(message){status.textContent=message;}
+function escapeHtml(value){return value.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+extractBtn.addEventListener('click',async function(){
+ const file=fileInput.files&&fileInput.files[0];
+ if(!file){setStatus('Please select a PDF file first.');return;}
+ if(file.type!=='application/pdf'&&!file.name.toLowerCase().endsWith('.pdf')){setStatus('The selected file is not a PDF.');return;}
+ if(!window.pdfjsLib){setStatus('PDF library could not load. Check your internet connection and reload this page.');return;}
+ extractBtn.disabled=true;downloadBtn.disabled=true;setStatus('Reading PDF…');
+ try{
+  const bytes=await file.arrayBuffer();
+  const pdf=await pdfjsLib.getDocument({data:bytes}).promise;
+  const pages=[];
+  for(let pageNo=1;pageNo<=pdf.numPages;pageNo++){
+   setStatus('Extracting page '+pageNo+' of '+pdf.numPages+'…');
+   const page=await pdf.getPage(pageNo);
+   const content=await page.getTextContent();
+   const lines=[];
+   for(const item of content.items){
+    if(!item.str||!item.str.trim())continue;
+    const y=Math.round(item.transform[5]/3)*3;
+    let line=lines.find(entry=>Math.abs(entry.y-y)<=2);
+    if(!line){line={y,items:[]};lines.push(line);}
+    line.items.push({x:item.transform[4],text:item.str,rtl:item.dir==='rtl'});
+   }
+   lines.sort((a,b)=>b.y-a.y);
+   const pageText=lines.map(line=>{
+    const joined=line.items.map(item=>item.text);
+    const isRtl=line.items.some(item=>item.rtl)||/[\u0600-\u06ff]/.test(joined.join(''));
+    line.items.sort((a,b)=>isRtl?b.x-a.x:a.x-b.x);
+    return line.items.map(item=>item.text).join(' ').replace(/[ \t]+/g,' ').trim();
+   }).filter(Boolean).join('\n');
+   pages.push(pageText);
+  }
+  output.value=pages.join('\n\n');
+  downloadBtn.disabled=!output.value.trim();
+  const extracted=output.value.trim();
+  setStatus(extracted?'Done. Extracted text from '+pdf.numPages+' page(s). Please review reading order before downloading.':'No selectable text was found. This may be a scanned PDF; use the Urdu Image to Text (OCR) tool instead.');
+ }catch(error){console.error(error);setStatus('Could not read this PDF. It may be damaged, encrypted, or unsupported. Please try another PDF.');}
+ finally{extractBtn.disabled=false;}
+});
+downloadBtn.addEventListener('click',function(){
+ const text=output.value;
+ if(!text.trim())return;
+ const html='<!doctype html><html><head><meta charset="utf-8"><style>body{font-family:Arial,sans-serif;font-size:12pt;line-height:1.8;direction:rtl;text-align:right;white-space:pre-wrap}p{white-space:pre-wrap}</style></head><body><p>'+escapeHtml(text)+'</p></body></html>';
+ const blob=new Blob(['\ufeff',html],{type:'application/msword;charset=utf-8'});
+ const url=URL.createObjectURL(blob);const link=document.createElement('a');
+ link.href=url;link.download='urdudigitalhub-converted.doc';document.body.appendChild(link);link.click();link.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1500);
+});
+clearBtn.addEventListener('click',function(){fileInput.value='';output.value='';downloadBtn.disabled=true;setStatus('Please choose a PDF file to begin.');});
+})();
+</script>
+</body>
+</html>
