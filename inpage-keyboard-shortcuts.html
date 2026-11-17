@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ur" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="A searchable Urdu InPage keyboard shortcut reference for common editing, language, navigation and page commands.">
+<meta name="author" content="UrduDigitalHub">
+<meta name="robots" content="index,follow">
+<title>Urdu InPage Keyboard Shortcuts | UrduDigitalHub</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f2f5fb;color:#17202a;font-family:Arial,"Noto Naskh Arabic",sans-serif;line-height:1.8}
+header{background:linear-gradient(120deg,#102d50,#174f78);color:#fff;text-align:center;padding:18px}
+.brand{display:inline-flex;align-items:center;gap:12px;color:#fff;text-decoration:none}.brand img{width:54px;height:54px}.brand h1{font-size:25px;margin:0}.brand p{margin:0;font-size:13px}
+nav{background:#fff;text-align:center;padding:12px}nav a{color:#175b88;text-decoration:none;font-weight:700;margin:0 9px}
+main{width:min(960px,94%);margin:28px auto}.card{background:#fff;padding:24px;border-radius:14px;box-shadow:0 4px 18px #0000000d;margin-bottom:18px}
+h2{margin-top:0;color:#17466d}input{width:100%;border:1px solid #b9cbe0;border-radius:9px;padding:12px;font:16px Arial,sans-serif}
+table{width:100%;border-collapse:collapse;margin-top:14px}th,td{text-align:right;padding:10px;border-bottom:1px solid #e2e9f1}th{background:#eef4fb;color:#17466d}
+kbd{display:inline-block;direction:ltr;unicode-bidi:isolate;background:#edf1f7;border:1px solid #cbd6e2;border-bottom-width:2px;border-radius:5px;padding:2px 7px;font:700 13px Consolas,monospace}
+button{border:0;border-radius:9px;padding:11px 17px;color:#fff;background:#1769aa;font-size:14px;font-weight:700;cursor:pointer;margin:10px 6px 0 0}
+.note{color:#59636e;font-size:14px}footer{text-align:center;color:#66717d;padding:10px 15px 28px;font-size:13px}
+@media(max-width:600px){.card{padding:15px}header h1{font-size:21px}th,td{padding:8px 5px;font-size:13px}kbd{font-size:11px}}
+</style>
+</head>
+<body>
+<header><a class="brand" href="index.html"><img src="logo.svg" alt="UrduDigitalHub"><span><h1>UrduDigitalHub</h1><p>Urdu Digital Tools &amp; Typing Platform</p></span></a></header>
+<nav><a href="index.html">⌂ Home</a><a href="about.html">About Us</a><a href="contact.html">Contact Us</a></nav>
+<main>
+<section class="card">
+<h2>InPage Keyboard Shortcuts</h2>
+<p>InPage mein kaam tez karne ke liye common keyboard shortcuts dekhein. Search box mein command ya shortcut likh kar list filter kar sakte hain.</p>
+<label for="search">Search shortcuts</label>
+<input id="search" type="search" placeholder="Example: Ctrl + Space, Save, Urdu...">
+<button id="copyAll" type="button">Copy visible shortcuts</button>
+<p id="count" class="note" aria-live="polite">Showing all shortcuts.</p>
+<div style="overflow-x:auto">
+<table>
+<thead><tr><th>Shortcut</th><th>Command</th><th>Group</th></tr></thead>
+<tbody id="shortcutRows"></tbody>
+</table>
+</div>
+</section>
+<section class="card">
+<h2>Important notes</h2>
+<p class="note">Shortcuts can differ between InPage versions, keyboard layouts and selected tools. Some commands may work only when a text box or document is active. Confirm any unfamiliar shortcut in your own InPage version before relying on it.</p>
+<p class="note">To switch between Urdu and English, Ctrl + Space is commonly used when the required language/keyboard is enabled in InPage preferences.</p>
+<p class="note">This is an independently written quick-reference guide. InPage is a third-party product; UrduDigitalHub is not affiliated with or endorsed by its owner. For current product details, consult the <a href="https://inpage.com/" target="_blank" rel="noopener">official InPage website</a>. General shortcut references were cross-checked against publicly available training material, including the <a href="https://tevtreform.jobs.gov.pk/wp-content/uploads/2022/05/CO-Learner-Guide.pdf" target="_blank" rel="noopener">Computer Operator Learner Guide</a>.</p>
+</section>
+</main>
+<footer>© 2026 UrduDigitalHub. All rights reserved.</footer>
+<script>
+(function(){
+const shortcuts=[
+ ['Ctrl + N','New document','File'],
+ ['Ctrl + O','Open document','File'],
+ ['Ctrl + S','Save document','File'],
+ ['Ctrl + Alt + S','Save As','File'],
+ ['Ctrl + P','Print document','File'],
+ ['Alt + F4','Exit InPage','File'],
+ ['Ctrl + A','Select all','Editing'],
+ ['Ctrl + C','Copy selection','Editing'],
+ ['Ctrl + X','Cut selection','Editing'],
+ ['Ctrl + V','Paste','Editing'],
+ ['Ctrl + Z','Undo','Editing'],
+ ['Ctrl + F','Find text','Editing'],
+ ['Ctrl + R','Replace text','Editing'],
+ ['Ctrl + Backspace','Delete previous word','Editing'],
+ ['Ctrl + Space','Switch Urdu / English input','Language'],
+ ['Left / Right Arrow','Move one character','Navigation'],
+ ['Ctrl + Left / Right','Move one word','Navigation'],
+ ['Home / End','Beginning / end of line','Navigation'],
+ ['Ctrl + Home / End','Beginning / end of story','Navigation'],
+ ['Ctrl + Up / Down','Previous / next paragraph','Navigation'],
+ ['Alt + Up / Down','Previous / next text box','Navigation'],
+ ['Ctrl + Alt + L','Align left','Formatting'],
+ ['Ctrl + Alt + R','Align right','Formatting'],
+ ['Ctrl + Alt + C','Align center','Formatting'],
+ ['Ctrl + Alt + J','Justify paragraph','Formatting'],
+ ['Alt + Insert','Insert page','Pages'],
+ ['Alt + Delete','Delete page','Pages'],
+ ['F5','Fit page to window','View'],
+ ['F6','50% zoom','View'],
+ ['F7','100% zoom','View'],
+ ['F8','200% zoom','View']
+];
+const rows=document.getElementById('shortcutRows');
+const search=document.getElementById('search');
+const count=document.getElementById('count');
+let visible=[];
+function render(){
+ const term=search.value.trim().toLowerCase();
+ visible=shortcuts.filter(item=>item.join(' ').toLowerCase().includes(term));
+ rows.replaceChildren();
+ for(const [key,command,group] of visible){
+  const tr=document.createElement('tr');
+  const keyCell=document.createElement('td');
+  const code=document.createElement('kbd');code.textContent=key;keyCell.appendChild(code);
+  const commandCell=document.createElement('td');commandCell.textContent=command;
+  const groupCell=document.createElement('td');groupCell.textContent=group;
+  tr.append(keyCell,commandCell,groupCell);rows.appendChild(tr);
+ }
+ count.textContent='Showing '+visible.length+' of '+shortcuts.length+' shortcuts.';
+}
+search.addEventListener('input',render);
+document.getElementById('copyAll').addEventListener('click',async function(){
+ if(!visible.length){count.textContent='No shortcuts match your search.';return;}
+ const text=visible.map(([key,command,group])=>key+' — '+command+' ('+group+')').join('\n');
+ try{await navigator.clipboard.writeText(text);count.textContent='Visible shortcuts copied.';}
+ catch(error){count.textContent='Clipboard access is unavailable in this browser.';}
+});
+render();
+})();
+</script>
+</body>
+</html>
