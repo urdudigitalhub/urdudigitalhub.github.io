@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Free Online Image Compressor – JPG, PNG & WebP | UrduDigitalHub</title>
+<meta name="description" content="Compress JPG, PNG and WebP images online for free. Adjust image quality, preview file size savings and download compressed images. Processing happens in your browser.">
+<meta name="author" content="UrduDigitalHub">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://urdudigitalhub.github.io/image-compressor.html">
+<meta property="og:title" content="Free Online Image Compressor | UrduDigitalHub">
+<meta property="og:description" content="Reduce JPG, PNG and WebP image file sizes with adjustable quality. Your images stay in your browser.">
+<meta property="og:url" content="https://urdudigitalhub.github.io/image-compressor.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="UrduDigitalHub">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Free Online Image Compressor","url":"https://urdudigitalhub.github.io/image-compressor.html","applicationCategory":"MultimediaApplication","operatingSystem":"Any","description":"Compress JPG, PNG and WebP images in your browser with adjustable quality. Images are not uploaded to the website.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+<link rel="icon" type="image/svg+xml" href="logo.svg">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f2f5fb;color:#17202a;font:16px/1.7 Arial,sans-serif}header{background:linear-gradient(120deg,#102d50,#174f78);padding:18px;text-align:center;color:white}.brand{display:inline-flex;align-items:center;gap:12px;color:white;text-decoration:none}.brand img{width:50px;height:50px}.brand h1{font-size:24px;margin:0}.brand p{margin:0;font-size:13px}nav{background:white;text-align:center;padding:12px}nav a{color:#175b88;text-decoration:none;font-weight:bold;margin:0 9px}main{width:min(900px,94%);margin:28px auto}.card{background:white;padding:24px;border-radius:14px;box-shadow:0 4px 18px #0000000d;margin-bottom:18px}h2{color:#17466d;margin-top:0}label{display:block;font-weight:bold;margin:14px 0 6px}input,select{max-width:100%}input[type=file],select{padding:10px;border:1px solid #b9cbe0;border-radius:8px;background:#fbfcff}input[type=range]{width:100%}button{border:0;border-radius:9px;padding:12px 20px;color:white;background:#1769aa;font-size:15px;font-weight:bold;cursor:pointer;margin:10px 6px 0 0}button:disabled{opacity:.5;cursor:not-allowed}.green{background:#16834f}.gray{background:#66717d}.status{padding:10px;background:#eef4fb;border-radius:8px;min-height:42px;white-space:pre-wrap}.preview{display:block;max-width:100%;max-height:360px;object-fit:contain;margin:14px auto}.stats{display:flex;flex-wrap:wrap;gap:12px}.stats span{background:#f1f5fb;padding:10px;border-radius:8px;flex:1 1 160px}.note{color:#59636e;font-size:14px}footer{text-align:center;color:#66717d;padding:10px 15px 28px;font-size:13px}@media(max-width:600px){.card{padding:16px}button{width:100%;margin:7px 0}header h1{font-size:21px}}
+</style>
+</head>
+<body>
+<header><a class="brand" href="index.html"><img src="logo.svg" alt="UrduDigitalHub"><span><h1>UrduDigitalHub</h1><p>Urdu Digital Tools &amp; Typing Platform</p></span></a></header>
+<nav><a href="index.html">⌂ Home</a><a href="image-resizer.html">Image Resizer</a><a href="about.html">About Us</a><a href="contact.html">Contact Us</a></nav>
+<main>
+<section class="card"><h2>Free Online Image Compressor</h2><p>Reduce the file size of JPG, PNG and WebP images. Choose a quality level, compare the result and download your compressed image.</p>
+<label for="file">Choose an image</label><input id="file" type="file" accept="image/jpeg,image/png,image/webp">
+<img id="preview" class="preview" alt="Selected image preview" hidden>
+<label for="format">Output format</label><select id="format"><option value="image/jpeg">JPG</option><option value="image/webp">WebP</option><option value="image/png">PNG (quality setting not supported)</option></select>
+<label for="quality">Quality: <output id="qualityValue">75%</output></label><input id="quality" type="range" min="10" max="100" value="75">
+<button id="compress" type="button" disabled>Compress Image</button><button id="download" class="green" type="button" disabled>Download Compressed Image</button><div id="status" class="status" role="status" aria-live="polite">Choose an image to begin.</div>
+<div class="stats"><span id="originalSize">Original size: —</span><span id="compressedSize">Compressed size: —</span></div></section>
+<section class="card"><h2>Privacy &amp; usage</h2><p class="note">Your selected image is processed locally in your browser using the built-in Canvas API. It is not uploaded to UrduDigitalHub. PNG is lossless and does not use the quality slider; JPG and WebP support adjustable quality. Some browsers may not support every output format.</p></section>
+</main><footer>© 2026 UrduDigitalHub. All rights reserved.</footer>
+<script>
+(()=>{
+const fileEl=document.getElementById('file'),preview=document.getElementById('preview'),format=document.getElementById('format'),quality=document.getElementById('quality'),qualityValue=document.getElementById('qualityValue'),compress=document.getElementById('compress'),download=document.getElementById('download'),status=document.getElementById('status');
+let source=null,outputUrl='',outputBlob=null,sourceName='image';
+const size=b=>b<1024?b+' B':b<1048576?(b/1024).toFixed(1)+' KB':(b/1048576).toFixed(2)+' MB';
+quality.addEventListener('input',()=>qualityValue.value=quality.value+'%');
+fileEl.addEventListener('change',()=>{
+ if(outputUrl)URL.revokeObjectURL(outputUrl);outputUrl='';outputBlob=null;download.disabled=true;source=null;
+ const file=fileEl.files&&fileEl.files[0];if(!file)return;
+ if(!['image/jpeg','image/png','image/webp'].includes(file.type)){status.textContent='Please choose a JPG, PNG or WebP image.';fileEl.value='';compress.disabled=true;return;}
+ source=URL.createObjectURL(file);sourceName=file.name.replace(/\.[^.]+$/,'')||'image';preview.src=source;preview.hidden=false;compress.disabled=false;
+ document.getElementById('originalSize').textContent='Original size: '+size(file.size);document.getElementById('compressedSize').textContent='Compressed size: —';status.textContent='Image ready. Select an output format and press Compress Image.';
+});
+compress.addEventListener('click',()=>{
+ if(!source)return;compress.disabled=true;download.disabled=true;status.textContent='Compressing image…';
+ const img=new Image();img.onload=()=>{
+  try{
+   const canvas=document.createElement('canvas');canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
+   const ctx=canvas.getContext('2d');if(!ctx)throw new Error('Canvas is unavailable');
+   if(format.value==='image/jpeg'){ctx.fillStyle='#ffffff';ctx.fillRect(0,0,canvas.width,canvas.height);}
+   ctx.drawImage(img,0,0);
+   canvas.toBlob(blob=>{
+    compress.disabled=false;
+    if(!blob){status.textContent='This output format is not supported by your browser. Try JPG or WebP.';return;}
+    if(outputUrl)URL.revokeObjectURL(outputUrl);outputBlob=blob;outputUrl=URL.createObjectURL(blob);
+    const ext=format.value==='image/jpeg'?'jpg':format.value==='image/webp'?'webp':'png';
+    download.dataset.url=outputUrl;download.dataset.name=sourceName+'-compressed.'+ext;download.disabled=false;
+    document.getElementById('compressedSize').textContent='Compressed size: '+size(blob.size);
+    const delta=100-(blob.size/(fileEl.files[0].size||1)*100);
+    status.textContent=(delta>=0?delta.toFixed(1)+'% smaller. ':'Output is '+Math.abs(delta).toFixed(1)+'% larger. ')+'Preview the result and download when ready.';
+   },format.value,Number(quality.value)/100);
+  }catch(e){compress.disabled=false;status.textContent='Could not process this image. Please try another file.';}
+ };img.onerror=()=>{compress.disabled=false;status.textContent='Could not open this image.';};img.src=source;
+});
+download.addEventListener('click',()=>{if(!outputUrl)return;const a=document.createElement('a');a.href=outputUrl;a.download=download.dataset.name;a.click();});
+window.addEventListener('beforeunload',()=>{if(source)URL.revokeObjectURL(source);if(outputUrl)URL.revokeObjectURL(outputUrl);});
+})();
+</script>
+</body></html>
