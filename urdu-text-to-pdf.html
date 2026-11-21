@@ -54,6 +54,14 @@ button{border:0;border-radius:9px;padding:12px 19px;color:#fff;background:#1769a
 <button id="makePdf" type="button">Create / Save PDF</button><button id="clearText" class="secondary" type="button">Clear text</button>
 <p class="note">Button dabane ke baad Print window khulegi. Printer/Destination mein “Save as PDF” select karein. Text aapke browser mein hi rehta hai.</p>
 </section>
+
+<section class="card no-print" id="inpageUpload">
+<h2>Upload InPage File (.inp)</h2>
+<p>Apni InPage file select karein. Tool file ko aapke browser mein read karega aur milne wala Urdu text neeche text box mein daal dega. Aap PDF banane se pehle text check aur edit kar sakte hain.</p>
+<label for="inpageFile">Select InPage .inp file</label>
+<input id="inpageFile" type="file" accept=".inp,application/octet-stream">
+<p id="inpageStatus" class="note" role="status" aria-live="polite">Maximum file size: 50 MB. File server par upload nahi hoti.</p>
+</section>
 <section class="card" id="printArea">
 <h2 id="printHeading" style="display:none">Urdu Document</h2>
 <div id="printContent" style="display:none;white-space:pre-wrap;direction:rtl;text-align:right"></div>
@@ -61,17 +69,67 @@ button{border:0;border-radius:9px;padding:12px 19px;color:#fff;background:#1769a
 </section>
 <section class="card no-print">
 <h2>Privacy &amp; usage</h2>
-<p class="note">This tool uses your browser's built-in print function. No external PDF library, font package, or remote conversion service is used. Your text is not uploaded to UrduDigitalHub.</p>
+<p class="note">This tool uses your browser's built-in print function. InPage file reading runs locally in your browser using open-source parsing libraries loaded from a CDN. Your selected file and text are not uploaded to UrduDigitalHub. An internet connection is required to load the parser.</p>
 </section>
 </main>
 <footer class="no-print">© 2026 UrduDigitalHub. All rights reserved.</footer>
 <script>
 (function(){
+'use strict';
 const input=document.getElementById('sourceText');
 const title=document.getElementById('docTitle');
 const size=document.getElementById('fontSize');
 const heading=document.getElementById('printHeading');
 const content=document.getElementById('printContent');
+const fileInput=document.getElementById('inpageFile');
+const status=document.getElementById('inpageStatus');
+let parserPromise=null;
+function setStatus(message,isError){status.textContent=message;status.style.color=isError?'#b42318':'#59636e';}
+async function loadParser(){
+ if(!parserPromise){
+  parserPromise=Promise.all([
+   import('https://esm.sh/cfb@1.2.2'),
+   import('https://esm.sh/inpage-format')
+  ]).then(function(modules){
+   const cfb=modules[0],decoder=modules[1];
+   if(typeof cfb.read!=='function'||typeof cfb.find!=='function'||typeof decoder.decodeV1V2!=='function'||typeof decoder.decodeV3!=='function'||typeof decoder.filterParagraphsWithMeta!=='function')throw new Error('Parser library interface is not available.');
+   return {cfb:cfb,decoder:decoder};
+  }).catch(function(error){parserPromise=null;throw error;});
+ }
+ return parserPromise;
+}
+fileInput.addEventListener('change',async function(){
+ const file=fileInput.files&&fileInput.files[0];
+ if(!file)return;
+ if(file.size===0){setStatus('File khaali hai. Doosri .inp file select karein.',true);return;}
+ if(file.size>50*1024*1024){setStatus('File 50 MB se bari hai. Chhoti file select karein.',true);fileInput.value='';return;}
+ setStatus('File check aur read ho rahi hai. Barah-e-karam intezar karein...',false);
+ try{
+  const bytes=new Uint8Array(await file.arrayBuffer());
+  const signature=[0xD0,0xCF,0x11,0xE0,0xA1,0xB1,0x1A,0xE1];
+  if(bytes.length<8||!signature.every(function(value,index){return bytes[index]===value;}))throw new Error('Yeh valid InPage/OLE document file nazar nahi aa rahi.');
+  const libs=await loadParser();
+  const container=libs.cfb.read(bytes,{type:'array'});
+  const stream100=libs.cfb.find(container,'/InPage100');
+  const stream200=libs.cfb.find(container,'/InPage200');
+  const stream300=libs.cfb.find(container,'/InPage300');
+  const entry=stream300||stream200||stream100;
+  if(!entry||!entry.content)throw new Error('Is file mein supported InPage text stream nahi mila.');
+  const stream=new Uint8Array(entry.content);
+  const version=stream300?3:(stream200?2:1);
+  const decoded=version===3?libs.decoder.decodeV3(stream):libs.decoder.decodeV1V2(stream);
+  const filtered=libs.decoder.filterParagraphsWithMeta(decoded.paragraphs||[],decoded.paragraphMeta||[]);
+  const paragraphs=filtered.paragraphs||[];
+  const extracted=paragraphs.join('\n');
+  if(!extracted.trim())throw new Error('File se readable text nahi mila. Mumkin hai file unsupported ya image/layout based ho.');
+  input.value=extracted;
+  setStatus('Text extract ho gaya ('+paragraphs.length+' paragraphs, InPage '+version+'). PDF banane se pehle neeche matn ko zaroor check karein. Formatting, images aur columns preserve nahi hote.',false);
+  input.focus();
+ }catch(error){
+  console.error('InPage import error:',error);
+  setStatus(error&&error.message?error.message:'File read nahi ho saki. Doosri InPage file try karein.',true);
+ }
+});
 document.getElementById('makePdf').addEventListener('click',function(){
  if(!input.value.trim()){alert('Please enter or paste some text first.');input.focus();return;}
  heading.textContent=title.value.trim()||'Urdu Document';
