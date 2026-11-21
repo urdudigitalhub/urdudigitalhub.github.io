@@ -421,6 +421,8 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   progressiveForms.play="playing";progressiveForms.sing="singing";progressiveForms.like="liking";progressiveForms.go="going";
   apply(/\b(am|is|are|was|were)\s+(go|play|sing|eat|write|read|work|walk|talk|wait|look|watch|drive|sleep|sit|swim|study|cook|dance|smile|make|take|give|live|move|have)\b/gi,
    (m,aux,verb)=>aux+" "+preserveVerbCase(verb,progressiveForms[verb.toLowerCase()]||verb));
+  apply(/\b(can|could|may|might|must|shall|should|will|would|do|does|did|don't|doesn't|didn't)\s+(sings|likes|wants|needs|knows|works|lives|runs|walks|speaks|drives|carries|cries|flies)\b/gi,
+   (m,aux,verb)=>aux+" "+preserveVerbCase(verb,baseAfterAux[verb.toLowerCase()]||verb));
   // Infinitive marker "to" is followed by the base form.
   apply(/\bto\s+(goes|does|has|says|takes|makes|comes|eats|writes|plays|watches|studies|tries|buys|chooses|gives|spends|arrives|looks|brings|waits|asks|tells|returns|opens|helps|learns|reads|gets|finds|sells|meets|leaves|feels|keeps|drinks|sleeps|cooks|cleans|washes|teaches|catches)\b/gi,
    (m,verb)=>"to "+preserveVerbCase(verb,baseAfterAux[verb.toLowerCase()]||verb));
