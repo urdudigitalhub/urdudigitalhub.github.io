@@ -111,7 +111,7 @@ body.tool-page .tool-panel{display:none!important}body.tool-page .tool-panel.act
 <section class="card tool-panel" id="reverseTool"><label for="inpageInput">InPage to Unicode Converter</label><textarea id="inpageInput" style="direction:ltr;text-align:left;font:17px/1.8 Consolas,monospace;white-space:pre;overflow-wrap:normal" placeholder="InPage encoded text yahan paste karein..."></textarea><div class="buttons"><button class="convert" id="reverseConvert">Convert to Unicode</button><button class="copy" id="copyUnicode">Copy Unicode</button></div><textarea id="unicodeOutput" readonly placeholder="Unicode Urdu text yahan nazar aayega..."></textarea></section>
 \n<section class="card tool-panel" id="englishProofreader">
 <label for="proofreaderInput">English Paragraph Grammar &amp; Spell Checker</label>
-<p class="note">Apna English paragraph paste karein. Common spelling aur grammar mistakes highlight hongi, aur neeche corrected paragraph milega.</p>
+<p class="note">Paste an English paragraph. The checker reviews spelling, common grammar patterns, punctuation, capitalization and spacing, then shows suggested corrections.</p>
 <textarea class="proofreader-input" id="proofreaderInput" placeholder="Paste or type your English paragraph here..."></textarea>
 <div class="buttons"><button class="convert" id="proofreaderCheck" type="button">Check Paragraph</button><button class="clear" id="proofreaderClear" type="button">Clear</button></div>
 <div class="proofreader-count" id="proofreaderCount">No check performed yet</div>
@@ -120,7 +120,7 @@ body.tool-page .tool-panel{display:none!important}body.tool-page .tool-panel.act
 <label style="margin-top:16px" for="proofreaderOutput">Corrected Paragraph</label>
 <textarea class="proofreader-output" id="proofreaderOutput" readonly placeholder="Corrected paragraph will appear here..."></textarea>
 <div class="buttons"><button class="copy" id="proofreaderCopy" type="button">Copy Corrected Paragraph</button></div>
-<p class="proofreader-help">Note: This is a free basic checker. It catches common spelling and grammar mistakes; it is not a complete AI grammar checker, so please review important writing.</p>
+<p class="proofreader-help">This free checker works with built-in English (US) rules in your browser. It can catch common errors but cannot understand every context like a human editor. Review suggestions before using important text.</p>
 </section>
 <section class="card" id="urdu-tools-guide">
 <h2>Free Urdu Online Tools and Typing Practice</h2>
@@ -239,30 +239,45 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
  $('gameNext').addEventListener('click',()=>{if(level===puzzles.length-1){level=0;score=0;}else level++;render();});
  render();
 })();
-/* English paragraph proofreader - basic client-side rules */
+/* English paragraph proofreader - expanded local rules, American English */
 (function(){
  const $=id=>document.getElementById(id);
  const spelling={
-  teh:'the',recieve:'receive',beleive:'believe',seperate:'separate',
-  definately:'definitely',becuase:'because',freind:'friend',thier:'their',
-  alot:'a lot',occured:'occurred',untill:'until',goverment:'government',
-  enviroment:'environment',adress:'address',writting:'writing',
-  begining:'beginning',tommorow:'tomorrow',wich:'which',
-  langauge:'language',studing:'studying',calender:'calendar',
-  acheive:'achieve',succesful:'successful',responsibile:'responsible',
-  neccessary:'necessary',embarass:'embarrass',throught:'through',graet:'great',
-  hy:'hey',hou:'how',arre:'are',yo:'you',buyed:'bought',dont:"don't"
+  teh:'the',recieve:'receive',beleive:'believe',seperate:'separate',definately:'definitely',
+  definately:'definitely',becuase:'because',freind:'friend',thier:'their',alot:'a lot',
+  occured:'occurred',untill:'until',goverment:'government',enviroment:'environment',
+  adress:'address',writting:'writing',begining:'beginning',tommorow:'tomorrow',wich:'which',
+  langauge:'language',studing:'studying',calender:'calendar',acheive:'achieve',
+  succesful:'successful',successfull:'successful',responsibile:'responsible',
+  neccessary:'necessary',necessery:'necessary',embarass:'embarrass',throught:'through',
+  graet:'great',reccommend:'recommend',recomend:'recommend',occassion:'occasion',
+  accomodate:'accommodate',arguement:'argument',comming:'coming',remeber:'remember',
+  untill:'until',wich:'which',wether:'whether',writen:'written',beleive:'believe',
+  begining:'beginning',buisness:'business',buisiness:'business', goverment:'government',
+  knowlege:'knowledge', privilage:'privilege', tommorow:'tomorrow', seperate:'separate',
+  truely:'truly', thier:'their', freindly:'friendly', adressing:'addressing',
+  becuase:'because', dont:"don't", doesnt:"doesn't", didnt:"didn't", cant:"can't",
+  wont:"won't", isnt:"isn't", arent:"aren't", wasnt:"wasn't", werent:"weren't",
+  couldnt:"couldn't", shouldnt:"shouldn't", wouldnt:"wouldn't",
+  buyed:'bought', goed:'went', thinked:'thought', eated:'ate', writed:'wrote',
+  hy:'hey', hou:'how', arre:'are'
  };
- const rules=[
-  /\b(teh|recieve|beleive|seperate|definately|becuase|freind|thier|alot|occured|untill|goverment|enviroment|adress|writting|begining|tommorow|wich|langauge|studing|calender|acheive|succesful|responsibile|neccessary|embarass|throught|graet|hy|hou|arre|buyed|dont)\b/gi,
-  /\b(don't\s+gave|I\s+tell|and\s+give\s+me)\b/gi,
+ const typoPattern=new RegExp('\\b('+Object.keys(spelling).sort((a,b)=>b.length-a.length).join('|')+')\\b','gi');
+ const highlightRules=[
+  typoPattern,
+  /\b(how\s+are\s+)yo\b/gi,
+  /\b(hi|hey)\s+how\s+are\s+you\b[.!?]?/gi,
   /\b(\w+)\s+\1\b/gi,/\bi\b/g,
   /\bI\s+(is|are|has)\b/gi,
-  /\b(he|she|it)\s+(are|have)\b/gi,
-  /\b(they|we|you)\s+is\b/gi,
-  /\b(a)\s+(?=[aeiou][a-z])/gi,
-  /\b(an)\s+(?=university|unicorn|uniform|useful|user|European)\b/gi,
-  /[ \t]{2,}/g,/\s+([,.!?;:])/g,/([,.!?;:])(?=[A-Za-z])/g
+  /\b(he|she|it)\s+(are|have|don't|do not|do)\b/gi,
+  /\b(they|we|you)\s+(is|has|does)\b/gi,
+  /\b(did|didn't|did not)\s+(went|ate|saw|wrote|came|took|did|bought|thought)\b/gi,
+  /\b(could|should|would|might|must)\s+of\b/gi,
+  /\b(a)\s+(apple|egg|orange|elephant|idea|answer|hour|honest|heir)\b/gi,
+  /\b(an)\s+(book|car|dog|house|university|uniform|user|useful|European)\b/gi,
+  /\b(your)\s+welcome\b/gi,/\b(more\s+better|more\s+ easier|most\s+best)\b/gi,
+  /[ \t]{2,}/g,/\s+([,.!?;:])/g,/([,.!?;:])(?=[A-Za-z])/g,
+  /(^|[.!?]\s+|\n\s*)([a-z])/g
  ];
  function preserveCase(word,replacement){
   if(word===word.toUpperCase())return replacement.toUpperCase();
@@ -272,37 +287,48 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
  function fix(text){
   let value=text,changes=0;
   function apply(regex,replacer){
-   value=value.replace(regex,(...args)=>{changes++;return replacer(...args);});
+   value=value.replace(regex,(...args)=>{
+    const next=replacer(...args);
+    if(next!==args[0])changes++;
+    return next;
+   });
   }
-  for(const [wrong,right] of Object.entries(spelling)){
-   const regex=new RegExp('\\b'+wrong+'\\b','gi');
-   apply(regex,match=>preserveCase(match,right));
-  }
+  apply(typoPattern,match=>preserveCase(match,spelling[match.toLowerCase()]));
+  apply(/\b(how\s+are\s+)yo\b/gi,(match,prefix)=>prefix+'you');
   apply(/\b(hi|hey)\s+how\s+are\s+you\b[.!?]?/gi,(match,greeting)=>preserveCase(greeting,greeting)+', how are you?');
-  apply(/\bdon't\s+gave\b/gi,()=>"didn't give");
-  apply(/\bI\s+tell\b/gi,()=> 'I told');
-  apply(/\band\s+give\s+me\b/gi,()=> 'and gave me');
   apply(/\b(\w+)\s+\1\b/gi,(match,word)=>word);
   apply(/\bi\b/g,()=>'I');
-  apply(/\bI\s+is\b/gi,()=>'I am');
-  apply(/\bI\s+are\b/gi,()=>'I am');
+  apply(/\bI\s+(is|are)\b/gi,()=>'I am');
   apply(/\bI\s+has\b/gi,()=>'I have');
   apply(/\b(he|she|it)\s+are\b/gi,(match,subject)=>subject+' is');
   apply(/\b(he|she|it)\s+have\b/gi,(match,subject)=>subject+' has');
+  apply(/\b(he|she|it)\s+(don't|do not)\b/gi,(match,subject)=>subject+" doesn't");
+  apply(/\b(he|she|it)\s+do\b/gi,(match,subject)=>subject+' does');
   apply(/\b(they|we|you)\s+is\b/gi,(match,subject)=>subject+' are');
-  const irregular={went:'go',ate:'eat',saw:'see',wrote:'write',came:'come',took:'take',did:'do'};
-  apply(/\bdidn't\s+(went|ate|saw|wrote|came|took|did)\b/gi,(match,verb)=>"didn't "+irregular[verb.toLowerCase()]);
-  apply(/\ba\s+(?=[aeiou][a-z])/gi,()=>'an ');
-  apply(/\ban\s+(?=university|unicorn|uniform|useful|user|European)\b/gi,()=>'a ');
+  apply(/\b(they|we|you)\s+has\b/gi,(match,subject)=>subject+' have');
+  apply(/\b(they|we|you)\s+does\b/gi,(match,subject)=>subject+' do');
+  const irregular={went:'go',ate:'eat',saw:'see',wrote:'write',came:'come',took:'take',did:'do',bought:'buy',thought:'think'};
+  apply(/\b(did|didn't|did not)\s+(went|ate|saw|wrote|came|took|did|bought|thought)\b/gi,(match,aux,verb)=>{
+   const base=irregular[verb.toLowerCase()];
+   return aux.toLowerCase()==='did'?'did '+base:aux+' '+base;
+  });
+  apply(/\b(could|should|would|might|must)\s+of\b/gi,(match,modal)=>modal+' have');
+  apply(/\bI\s+am\s+agree\b/gi,()=>'I agree');
+  apply(/\bdiscuss\s+about\b/gi,()=>'discuss');
+  apply(/\breturn\s+back\b/gi,()=>'return');
+  apply(/\b(your)\s+welcome\b/gi,()=>"you're welcome");
+  apply(/\b(more\s+better|more\s+ easier|most\s+best)\b/gi,match=>match.toLowerCase().includes('most')?'best':'better');
+  apply(/\ba\s+(?=apple|egg|orange|elephant|idea|answer|hour|honest|heir)\b/gi,()=>'an ');
+  apply(/\ban\s+(?=book|car|dog|house|university|uniform|user|useful|European)\b/gi,()=>'a ');
   apply(/[ \t]{2,}/g,()=>' ');
   apply(/\s+([,.!?;:])/g,(match,punctuation)=>punctuation);
-  apply(/([,.!?;:])(?=[A-Za-z])/g,(match)=>match+' ');
-  apply(/(^|[.!?]\s+)([a-z])/g,(match,prefix,letter)=>prefix+letter.toUpperCase());
+  apply(/([,.!?;:])(?=[A-Za-z])/g,match=>match+' ');
+  apply(/(^|[.!?]\s+|\n\s*)([a-z])/g,(match,prefix,letter)=>prefix+letter.toUpperCase());
   return {text:value,changes};
  }
  function highlight(text){
   const ranges=[];
-  for(const regex of rules){
+  for(const regex of highlightRules){
    regex.lastIndex=0;let match;
    while((match=regex.exec(text))!==null){
     if(match[0].length)ranges.push([match.index,match.index+match[0].length]);
@@ -335,8 +361,7 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   $('proofreaderCount').textContent=result.changes+' possible correction(s) applied. Yellow highlights show detected patterns.';
  });
  $('proofreaderClear').addEventListener('click',()=>{
-  $('proofreaderInput').value='';
-  $('proofreaderOutput').value='';
+  $('proofreaderInput').value='';$('proofreaderOutput').value='';
   $('proofreaderPreview').textContent='Your paragraph with highlighted mistakes will appear here.';
   $('proofreaderCount').textContent='No check performed yet';
  });
@@ -346,7 +371,7 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   try{await navigator.clipboard.writeText(output.value);alert('Corrected paragraph copied.');}
   catch(error){output.focus();output.select();alert('Press Ctrl+C to copy.');}
  });
-})();
+})();;
 </script>
 <script>
 (function(){
