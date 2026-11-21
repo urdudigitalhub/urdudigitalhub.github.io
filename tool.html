@@ -497,7 +497,7 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
    apply(new RegExp("\\b(when|after|before)\\s+("+narrativeSubject+")\\s+("+narrativeVerb+")\\b([^,.!?\\n]*,\\s*)("+narrativeSubject+")\\s+("+narrativeVerb+")\\b","gi"),
     (m,link,subject1,verb1,middle,subject2,verb2)=>link+" "+subject1+" "+toPast(verb1)+middle+subject2+" "+toPast(verb2));
    // Change a present negative only when it is a coordinated event after an explicit past predicate in the same sentence.
-   value=value.replace(/([^.!?\\n]*\\b(?:was|were|went|came|bought|said|told|ate|arrived|returned|looked|played|worked)\\b[^.!?\\n]*?\\b(?:but|and)\\s+)(the\\s+(?:waiter|shopkeeper|driver|teacher|doctor)|he|she|they|we|I)\\s+(doesn't|does\\s+not)\\s+([a-z]+)\\b/gi,
+   value=value.replace(/([^.!?\n]*\b(?:was|were|went|came|bought|said|told|ate|arrived|returned|looked|played|worked)\b[^.!?\n]*?\b(?:but|and)\s+)(the\s+(?:waiter|shopkeeper|driver|teacher|doctor)|he|she|they|we|I)\s+(doesn't|does\s+not)\s+([a-z]+)\b/gi,
     (m,before,subject,negative,verb)=>{
      const pastNeg=negative.toLowerCase().replace(/does(?:n't| not)/,"didn't");
      return before+subject+" "+pastNeg+" "+verb;
@@ -514,10 +514,13 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
     const safePast={tell:"told",tells:"told",ask:"asked",asks:"asked",say:"said",says:"said",show:"showed",shows:"showed",give:"gave",gives:"gave",send:"sent",sends:"sent"};
     return "I "+(safePast[verb.toLowerCase()]||verb)+" "+object;
    });
+   // Repair a missing -ing form after was/were in clear past-continuous constructions.
+   const pastProgressive={go:"going",come:"coming",run:"running",eat:"eating",play:"playing",work:"working",walk:"walking",talk:"talking",wait:"waiting",look:"looking",watch:"watching",read:"reading",write:"writing",drive:"driving",sleep:"sleeping",sit:"sitting",swim:"swimming",study:"studying",cook:"cooking",dance:"dancing",smile:"smiling",make:"making",take:"taking",give:"giving",live:"living",move:"moving",have:"having"};
+   apply(/\b(was|were)\s+(go|come|run|eat|play|work|walk|talk|wait|look|watch|read|write|drive|sleep|sit|swim|study|cook|dance|smile|make|take|give|live|move|have)\b/gi,(m,aux,verb)=>aux+" "+pastProgressive[verb.toLowerCase()]);
    // Modal verbs always take the base form, even inside a past-time story.
    apply(/\b(should|could|would|might|must|can|will|may)\s+(goes|does|has|says|takes|makes|comes|eats|writes|plays|watches|studies|tries|buys|chooses|gives|spends|arrives|looks|brings|waits|asks|tells|returns)\b/gi,(m,modal,verb)=>modal+" "+({goes:"go",does:"do",has:"have",says:"say",takes:"take",makes:"make",comes:"come",eats:"eat",writes:"write",plays:"play",watches:"watch",studies:"study",tries:"try",buys:"buy",chooses:"choose",gives:"give",spends:"spend",arrives:"arrive",looks:"look",brings:"bring",waits:"wait",asks:"ask",tells:"tell",returns:"return"}[verb.toLowerCase()]||verb));
    // A past event after a past predicate takes "didn't", not "doesn't".
-   value=value.replace(/([^.!?\\n]*\\b(?:was|were|went|came|bought|said|told|ate|arrived|returned|looked|played|worked)\\b[^.!?\\n]*?)\\b(doesn't|does\\s+not)\\s+([a-z]+)\\b/gi,
+   value=value.replace(/([^.!?\n]*\b(?:was|were|went|came|bought|said|told|ate|arrived|returned|looked|played|worked)\b[^.!?\n]*?)\b(doesn't|does\s+not)\s+([a-z]+)\b/gi,
     (m,before,negative,verb)=>before+"didn't "+verb);
    // Preserve clear habitual preferences even when the surrounding paragraph narrates a past event.
    apply(/\b(my\s+brother|my\s+sister|my\s+mother|my\s+father)\s+didn't\s+like\s+expensive\s+things\b/gi,(m,subject)=>subject+" doesn't like expensive things");
