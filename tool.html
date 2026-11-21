@@ -393,6 +393,7 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   apply(/\b(people|students|children|books|cars|friends)\s+was\b/gi,(m,sub)=>sub+' were');
   apply(/\b(he|she|it|my brother|my sister|the teacher|the student)\s+(go|do|have|say|take|make|come|eat|write|play|watch|study)\b/gi,(m,sub,verb)=>sub+' '+({go:'goes',do:'does',have:'has',say:'says',take:'takes',make:'makes',come:'comes',eat:'eats',write:'writes',play:'plays',watch:'watches',study:'studies'}[verb.toLowerCase()]||verb));
   apply(/\b(I|you|we|they)\s+(goes|does|has|says|takes|makes|comes|eats|writes|plays|watches|studies|likes|wants|needs|knows|works|lives|runs|walks|speaks|drives|tries|carries|cries|flies)\b/gi,(m,sub,verb)=>sub+' '+({goes:'go',does:'do',has:'have',says:'say',takes:'take',makes:'make',comes:'come',eats:'eat',writes:'write',plays:'play',watches:'watch',studies:'study',likes:'like',wants:'want',needs:'need',knows:'know',works:'work',lives:'live',runs:'run',walks:'walk',speaks:'speak',drives:'drive',tries:'try',carries:'carry',cries:'cry',flies:'fly'}[verb.toLowerCase()]||verb));
+  apply(/\b(can|could|should|would|will|must|may|might)\s+(speaks|likes|wants|needs|knows|works|lives|runs|walks|drives)\b/gi,(m,modal,verb)=>modal+" "+({speaks:"speak",likes:"like",wants:"want",needs:"need",knows:"know",works:"work",lives:"live",runs:"run",walks:"walk",drives:"drive"}[verb.toLowerCase()]));
   apply(/\b(did|didn't|did not)\s+(went|ate|saw|wrote|came|took|bought|thought|made|gave|found|ran|spoke|drank|slept|broke|chose|drove|forgot|knew|left|read|rode|sent|sat|stood|swam|told|wore|won)\b/gi,(m,aux,verb)=>{
     const base={went:'go',ate:'eat',saw:'see',wrote:'write',came:'come',took:'take',bought:'buy',thought:'think',made:'make',gave:'give',found:'find',ran:'run',spoke:'speak',drank:'drink',slept:'sleep',broke:'break',chose:'choose',drove:'drive',forgot:'forget',knew:'know',left:'leave',read:'read',rode:'ride',sent:'send',sat:'sit',stood:'stand',swam:'swim',told:'tell',wore:'wear',won:'win'}[verb.toLowerCase()];
     return aux+' '+base;
@@ -416,8 +417,8 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   apply(/\b(afraid from)\b/gi,()=>'afraid of');
   apply(/\b(angry on)\b/gi,()=>'angry with');
   apply(/\b(look forward for)\b/gi,()=>'look forward to');
-  apply(/\balthough\s+([^.!?]+?),?\s+but\b/gi,(m,clause)=>preserveCase(m.slice(0,1),'a')+'although '+clause.trim()+',');
-  apply(/\bbecause\s+([^.!?]+?),?\s+so\b/gi,(m,clause)=>preserveCase(m.slice(0,1),'b')+'because '+clause.trim()+',');
+  apply(/\balthough\s+([^.!?]+?),?\s+but\b/gi,(m,clause)=>preserveCase(m.slice(0,1),'although')+' '+clause.trim()+',');
+  apply(/\bbecause\s+([^.!?]+?),?\s+so\b/gi,(m,clause)=>preserveCase(m.slice(0,1),'because')+' '+clause.trim()+',');
   apply(/\b(could of|should of|would of|must of|might of)\b/gi,m=>m.replace(/\s+of$/i,' have'));
 
   // Additional common agreement, tense, noun and verb-pattern corrections.
