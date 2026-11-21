@@ -488,10 +488,10 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
    const narrativeVerb=Object.keys(narrativePastMap).sort((a,b)=>b.length-a.length).join("|");
    const toPast=verb=>narrativePastMap[verb.toLowerCase()]||verb;
    // A clear sequence marker can carry the established past narrative into that sentence.
-   apply(new RegExp("\\b((?:after\\s+that|later\\s+that\\s+day|soon\\s+after(?:\\s+that)?))\\s*,?\\s*("+narrativeSubject+")\\s+("+narrativeVerb+")\\b([^.!?\\n]*)","gi"),
-    (m,sequence,subject,verb,tail)=>{
+   apply(new RegExp("\\b((?:after\\s+that|later\\s+that\\s+day|soon\\s+after(?:\\s+that)?))(,?)\\s*("+narrativeSubject+")\\s+("+narrativeVerb+")\\b([^.!?\\n]*)","gi"),
+    (m,sequence,comma,subject,verb,tail)=>{
      const correctedTail=tail.replace(new RegExp("\\b(and|then)\\s+("+narrativeVerb+")\\b","gi"),(part,join,nextVerb)=>join+" "+toPast(nextVerb));
-     return sequence+" "+subject+" "+toPast(verb)+correctedTail;
+     return sequence+comma+" "+subject+" "+toPast(verb)+correctedTail;
     });
    // A past-time story commonly uses a completed when-clause followed by a past main clause.
    apply(new RegExp("\\b(when|after|before)\\s+("+narrativeSubject+")\\s+("+narrativeVerb+")\\b([^,.!?\\n]*,\\s*)("+narrativeSubject+")\\s+("+narrativeVerb+")\\b","gi"),
@@ -509,17 +509,10 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
    apply(/\b(there)\s+was\s+(many|several|few|numerous)\b/gi,(m,there)=>there+" were "+m.match(/\b(many|several|few|numerous)$/i)[1]);
    apply(/\b(every\s+[a-z]+|each\s+[a-z]+|the\s+(?:shopkeeper|waiter|teacher|student|driver|doctor|manager))\s+were\b/gi,(m,subject)=>subject+" was");
    apply(/\b(she|he|it|my\s+(?:mother|father|sister|brother|aunt|uncle|cousin)|the\s+(?:shopkeeper|waiter|teacher|student|driver|doctor|manager))\s+were(\s+[a-z]+ing)\b/gi,(m,subject,ending)=>subject+" was"+ending);
-   // Past narrative simple verbs are corrected sentence by sentence; habitual statements are left alone.
-   value=value.replace(/[^.!?\\n]+/g,sentence=>{
-    if(/\b(?:every\s+day|every\s+week|every\s+month|every\s+year|usually|normally|generally|often|sometimes|always|nowadays|these\s+days)\b/i.test(sentence))return sentence;
-    const stativeNegative=/\b(?:don't|doesn't|do\s+not|does\s+not)\s+(?:like|love|hate|prefer|believe|know|understand|own|want|need)\b/i;
-    const subjectPattern="(?:I|we|they|he|she|my\\s+(?:brother|sister|mother|father|aunt|uncle|cousin)|the\\s+(?:waiter|shopkeeper|teacher|student|driver|doctor|manager))";
-    const presentForms=Object.keys(narrativePastMap).filter(v=>!["was","were","had","did","has","have","is","are","am"].includes(v)).sort((a,b)=>b.length-a.length).join("|");
-    const pattern=new RegExp("\\b("+subjectPattern+")\\s+("+presentForms+")\\b","gi");
-    return sentence.replace(pattern,(m,subject,verb)=>{
-     if(stativeNegative.test(sentence)&&/^(?:he|she|it|my\\s+(?:brother|sister|mother|father|aunt|uncle|cousin))$/i.test(subject)&&/^(?:likes|like|loves|love|hates|hate|prefers|prefer|believes|believe|knows|know|owns|own|wants|want|needs|need)$/i.test(verb))return m;
-     return subject+" "+(narrativePastMap[verb.toLowerCase()]||verb);
-    });
+   // A first-person reporting action in an established past narrative is a completed event.
+   apply(new RegExp("\\bI\\s+("+narrativeVerb+")\\s+(him|her|them|us|me|that)\\b","gi"),(m,verb,object)=>{
+    const safePast={tell:"told",tells:"told",ask:"asked",asks:"asked",say:"said",says:"said",show:"showed",shows:"showed",give:"gave",gives:"gave",send:"sent",sends:"sent"};
+    return "I "+(safePast[verb.toLowerCase()]||verb)+" "+object;
    });
    // Modal verbs always take the base form, even inside a past-time story.
    apply(/\b(should|could|would|might|must|can|will|may)\s+(goes|does|has|says|takes|makes|comes|eats|writes|plays|watches|studies|tries|buys|chooses|gives|spends|arrives|looks|brings|waits|asks|tells|returns)\b/gi,(m,modal,verb)=>modal+" "+({goes:"go",does:"do",has:"have",says:"say",takes:"take",makes:"make",comes:"come",eats:"eat",writes:"write",plays:"play",watches:"watch",studies:"study",tries:"try",buys:"buy",chooses:"choose",gives:"give",spends:"spend",arrives:"arrive",looks:"look",brings:"bring",waits:"wait",asks:"ask",tells:"tell",returns:"return"}[verb.toLowerCase()]||verb));
