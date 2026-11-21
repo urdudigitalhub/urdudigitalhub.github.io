@@ -483,10 +483,10 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   // Past narrative continuation: only use sequence clauses when the same paragraph has an explicit past-time anchor.
   const hasPastTimeAnchor=/\b(?:yesterday|last\s+(?:week|night|year|month|morning|evening|monday|tuesday|wednesday|thursday|friday|saturday|sunday)|\d+\s+(?:day|week|month|year)s?\s+ago|(?:in|during)\s+(?:19|20)\d{2})\b/i.test(value);
   const narrativePastMap=Object.assign({},pastMap,{eat:"ate",eats:"ate",play:"played",plays:"played",run:"ran",runs:"ran"});
+  const narrativeVerb=Object.keys(narrativePastMap).sort((a,b)=>b.length-a.length).join("|");
+  const toPast=verb=>narrativePastMap[verb.toLowerCase()]||verb;
   if(hasPastTimeAnchor){
    const narrativeSubject="(?:I|we|they|he|she|my\\s+(?:brother|sister|mother|father|aunt|uncle|cousin)|the\\s+(?:waiter|shopkeeper|teacher|student|driver|doctor|manager))";
-   const narrativeVerb=Object.keys(narrativePastMap).sort((a,b)=>b.length-a.length).join("|");
-   const toPast=verb=>narrativePastMap[verb.toLowerCase()]||verb;
    // A clear sequence marker can carry the established past narrative into that sentence.
    apply(new RegExp("\\b((?:after\\s+that|later\\s+that\\s+day|soon\\s+after(?:\\s+that)?))(,?)\\s*("+narrativeSubject+")\\s+("+narrativeVerb+")\\b([^.!?\\n]*)","gi"),
     (m,sequence,comma,subject,verb,tail)=>{
