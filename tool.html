@@ -380,7 +380,7 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   // Broader common English grammar patterns (rule-based; context-sensitive cases remain suggestions).
   apply(/\b(he|she|it)\s+(don't|do not)\b/gi,(m,sub)=>sub+" doesn't");
   apply(/\b(I|you|we|they)\s+doesn't\b/gi,(m,sub)=>sub+" don't");
-  apply(/\b(he|she|it)\s+doesn't\s+(goes|does|has|says|takes|makes|comes|eats|writes|plays|watches|studies|likes|wants|needs|knows|works|lives|runs|walks|speaks|drives|tries|carries|cries|flies)\b/gi,(m,sub,verb)=>sub+" doesn't "+({goes:"go",does:"do",has:"have",says:"say",takes:"take",makes:"make",comes:"come",eats:"eat",writes:"write",plays:"play",watches:"watch",studies:"study"}[verb.toLowerCase()]));
+  apply(/\b(he|she|it)\s+doesn't\s+(goes|does|has|says|takes|makes|comes|eats|writes|plays|watches|studies|likes|wants|needs|knows|works|lives|runs|walks|speaks|drives|tries|carries|cries|flies)\b/gi,(m,sub,verb)=>sub+" doesn't "+({goes:"go",does:"do",has:"have",says:"say",takes:"take",makes:"make",comes:"come",eats:"eat",writes:"write",plays:"play",watches:"watch",studies:"study",likes:"like",wants:"want",needs:"need",knows:"know",works:"work",lives:"live",runs:"run",walks:"walk",speaks:"speak",drives:"drive",tries:"try",carries:"carry",cries:"cry",flies:"fly"}[verb.toLowerCase()]));
 
   apply(/\b(we|they)\s+was\b/gi,(m,sub)=>sub+' were');
   apply(/\b(I)\s+was\b/gi,(m,sub)=>sub+' was');
@@ -392,7 +392,7 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   apply(/\b(many|several|few)\s+(people|students|children|books|cars|friends)\s+is\b/gi,(m,quant,noun)=>quant+' '+noun+' are');
   apply(/\b(people|students|children|books|cars|friends)\s+was\b/gi,(m,sub)=>sub+' were');
   apply(/\b(he|she|it|my brother|my sister|the teacher|the student)\s+(go|do|have|say|take|make|come|eat|write|play|watch|study)\b/gi,(m,sub,verb)=>sub+' '+({go:'goes',do:'does',have:'has',say:'says',take:'takes',make:'makes',come:'comes',eat:'eats',write:'writes',play:'plays',watch:'watches',study:'studies'}[verb.toLowerCase()]||verb));
-  apply(/\b(I|you|we|they)\s+(goes|does|has|says|takes|makes|comes|eats|writes|plays|watches|studies|likes|wants|needs|knows|works|lives|runs|walks|speaks|drives|tries|carries|cries|flies)\b/gi,(m,sub,verb)=>sub+' '+({goes:'go',does:'do',has:'have',says:'say',takes:'take',makes:'make',comes:'come',eats:'eat',writes:'write',plays:'play',watches:'watch',studies:'study'}[verb.toLowerCase()]||verb));
+  apply(/\b(I|you|we|they)\s+(goes|does|has|says|takes|makes|comes|eats|writes|plays|watches|studies|likes|wants|needs|knows|works|lives|runs|walks|speaks|drives|tries|carries|cries|flies)\b/gi,(m,sub,verb)=>sub+' '+({goes:'go',does:'do',has:'have',says:'say',takes:'take',makes:'make',comes:'come',eats:'eat',writes:'write',plays:'play',watches:'watch',studies:'study',likes:'like',wants:'want',needs:'need',knows:'know',works:'work',lives:'live',runs:'run',walks:'walk',speaks:'speak',drives:'drive',tries:'try',carries:'carry',cries:'cry',flies:'fly'}[verb.toLowerCase()]||verb));
   apply(/\b(did|didn't|did not)\s+(went|ate|saw|wrote|came|took|bought|thought|made|gave|found|ran|spoke|drank|slept|broke|chose|drove|forgot|knew|left|read|rode|sent|sat|stood|swam|told|wore|won)\b/gi,(m,aux,verb)=>{
     const base={went:'go',ate:'eat',saw:'see',wrote:'write',came:'come',took:'take',bought:'buy',thought:'think',made:'make',gave:'give',found:'find',ran:'run',spoke:'speak',drank:'drink',slept:'sleep',broke:'break',chose:'choose',drove:'drive',forgot:'forget',knew:'know',left:'leave',read:'read',rode:'ride',sent:'send',sat:'sit',stood:'stand',swam:'swim',told:'tell',wore:'wear',won:'win'}[verb.toLowerCase()];
     return aux+' '+base;
@@ -416,8 +416,8 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   apply(/\b(afraid from)\b/gi,()=>'afraid of');
   apply(/\b(angry on)\b/gi,()=>'angry with');
   apply(/\b(look forward for)\b/gi,()=>'look forward to');
-  apply(/\balthough\s+([^.!?]+?),?\s+but\b/gi,(m,clause)=>'although '+clause);
-  apply(/\bbecause\s+([^.!?]+?),?\s+so\b/gi,(m,clause)=>'because '+clause);
+  apply(/\balthough\s+([^.!?]+?),?\s+but\b/gi,(m,clause)=>preserveCase(m.slice(0,1),'a')+'although '+clause.trim()+',');
+  apply(/\bbecause\s+([^.!?]+?),?\s+so\b/gi,(m,clause)=>preserveCase(m.slice(0,1),'b')+'because '+clause.trim()+',');
   apply(/\b(could of|should of|would of|must of|might of)\b/gi,m=>m.replace(/\s+of$/i,' have'));
 
   // Additional common agreement, tense, noun and verb-pattern corrections.
@@ -429,6 +429,7 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   apply(/\b(did|didn't|did not)\s+(went|ate|saw|wrote|came|took|bought|thought|made|gave|found|ran|spoke|drank|slept|broke|chose|drove|forgot|knew|left|rode|sent|sat|stood|swam|told|wore|won)\b/gi,(m,aux,verb)=>aux+" "+({went:"go",ate:"eat",saw:"see",wrote:"write",came:"come",took:"take",bought:"buy",thought:"think",made:"make",gave:"give",found:"find",ran:"run",spoke:"speak",drank:"drink",slept:"sleep",broke:"break",chose:"choose",drove:"drive",forgot:"forget",knew:"know",left:"leave",rode:"ride",sent:"send",sat:"sit",stood:"stand",swam:"swim",told:"tell",wore:"wear",won:"win"}[verb.toLowerCase()]));
   apply(/\b(has|have|had)\s+(went|ate|saw|wrote|came|took|bought|thought|made|gave|found|ran|spoke|drank|slept|broke|chose|drove|forgot|knew|left|rode|sent|sat|stood|swam|told|wore|won)\b/gi,(m,aux,verb)=>aux+" "+({went:"gone",ate:"eaten",saw:"seen",wrote:"written",came:"come",took:"taken",bought:"bought",thought:"thought",made:"made",gave:"given",found:"found",ran:"run",spoke:"spoken",drank:"drunk",slept:"slept",broke:"broken",chose:"chosen",drove:"driven",forgot:"forgotten",knew:"known",left:"left",rode:"ridden",sent:"sent",sat:"sat",stood:"stood",swam:"swum",told:"told",wore:"worn",won:"won"}[verb.toLowerCase()]));
   apply(/\b(every|each)\s+(students|people|children|books|days|friends|cars|teachers)\b/gi,(m,det,noun)=>det+" "+({students:"student",people:"person",children:"child",books:"book",days:"day",friends:"friend",cars:"car",teachers:"teacher"}[noun.toLowerCase()]));
+  apply(/\b(every|each)\s+(student|person|child|book|day|friend|car|teacher)\s+have\b/gi,(m,det,noun)=>det+" "+noun+" has");
   apply(/\b(much)\s+(people|students|children|friends|cars|books)\b/gi,(m,quant,noun)=>"many "+noun);
   apply(/\b(many)\s+(money|water|milk|sugar|information|advice|furniture|homework)\b/gi,(m,quant,noun)=>"much "+noun);
   apply(/\b(less)\s+(people|students|children|cars|books|friends)\b/gi,(m,quant,noun)=>"fewer "+noun);
