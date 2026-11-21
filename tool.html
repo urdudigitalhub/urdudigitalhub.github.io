@@ -502,6 +502,28 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
      return before+subject+" "+pastNeg+" "+verb;
     });
   }
+  // Correct frequent irregular and agreement errors inside an explicitly past-time narrative.
+  if(hasPastTimeAnchor){
+   apply(/\b(buyed|goed|eated| taked| writed| telled| goed|comed|bringed|thinked|runned|speaked|drived|choosed| teached)\b/gi,(m)=>({buyed:"bought",goed:"went",eated:"ate",taked:"took",writed:"wrote",telled:"told",comed:"came",bringed:"brought",thinked:"thought",runned:"ran",speaked:"spoke",drived:"drove",choosed:"chose",teached:"taught"}[m.toLowerCase()]||m));
+   apply(/\b(there)\s+was\s+(many|several|few|numerous)\b/gi,(m,there)=>there+" were "+m.match(/\b(many|several|few|numerous)$/i)[1]);
+   apply(/\b(every\s+[a-z]+|each\s+[a-z]+|the\s+(?:shopkeeper|waiter|teacher|student|driver|doctor|manager))\s+were\b/gi,(m,subject)=>subject+" was");
+   apply(/\b(she|he|it|my\s+(?:mother|father|sister|brother|aunt|uncle|cousin)|the\s+(?:shopkeeper|waiter|teacher|student|driver|doctor|manager))\s+were(\s+[a-z]+ing)\b/gi,(m,subject,ending)=>subject+" was"+ending);
+   // Past narrative simple verbs are corrected sentence by sentence; habitual statements are left alone.
+   value=value.replace(/[^.!?\\n]+/g,sentence=>{
+    if(/\b(?:every\s+day|every\s+week|every\s+month|every\s+year|usually|normally|generally|often|sometimes|always|nowadays|these\s+days)\b/i.test(sentence))return sentence;
+    const stativeNegative=/\b(?:don't|doesn't|do\s+not|does\s+not)\s+(?:like|love|hate|prefer|believe|know|understand|own|want|need)\b/i;
+    const subjectPattern="(?:I|we|they|he|she|my\\s+(?:brother|sister|mother|father|aunt|uncle|cousin)|the\\s+(?:waiter|shopkeeper|teacher|student|driver|doctor|manager))";
+    const presentForms=Object.keys(pastMap).filter(v=>!["was","were","had","did","has","have","is","are","am"].includes(v)).sort((a,b)=>b.length-a.length).join("|");
+    const pattern=new RegExp("\\b("+subjectPattern+")\\s+("+presentForms+")\\b","gi");
+    return sentence.replace(pattern,(m,subject,verb)=>{
+     if(stativeNegative.test(sentence)&&/^(?:he|she|it|my\\s+(?:brother|sister|mother|father|aunt|uncle|cousin))$/i.test(subject)&&/^(?:likes|like|loves|love|hates|hate|prefers|prefer|believes|believe|knows|know|owns|own|wants|want|needs|need)$/i.test(verb))return m;
+     return subject+" "+(pastMap[verb.toLowerCase()]||verb);
+    });
+   });
+   // A past event after a past predicate takes "didn't", not "doesn't".
+   value=value.replace(/([^.!?\\n]*\\b(?:was|were|went|came|bought|said|told|ate|arrived|returned|looked|played|worked)\\b[^.!?\\n]*?)\\b(doesn't|does\\s+not)\\s+([a-z]+)\\b/gi,
+    (m,before,negative,verb)=>before+"didn't "+verb);
+  }
   // Avoid changing an entire paragraph's tense from a single time-word; tense corrections above stay local to clear sentence patterns.
   // Apply user-approved learning last, so a saved correction can fix a pattern missed by built-in rules.
   const learnedRules=loadLearnedCorrections();
