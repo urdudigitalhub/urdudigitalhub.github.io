@@ -362,13 +362,13 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   const singularSubjectRegex=new RegExp("\\b("+singularSubjects+")\\s+(am|are|were|have|do|don't|isn't|aren't|wasn't|weren't|"+Object.keys(pluralToSingular).sort((a,b)=>b.length-a.length).join("|")+")\\b","gi");
   apply(singularSubjectRegex,(m,subject,verb)=>{
    const v=verb.toLowerCase();
-   const corrected=({am:"is",are:"is",were:"was",have:"has",do:"does",don't:"doesn't",isn't:"isn't",aren't:"isn't",wasn't:"wasn't",weren't:"wasn't"}[v]||pluralToSingular[v]||verb);
+   const corrected=({am:"is",are:"is",were:"was",have:"has",do:"does","don't":"doesn't","isn't":"isn't","aren't":"isn't","wasn't":"wasn't","weren't":"wasn't"}[v]||pluralToSingular[v]||verb);
    return subject+" "+(verb===verb.toUpperCase()?corrected.toUpperCase():verb[0]===verb[0].toUpperCase()?corrected[0].toUpperCase()+corrected.slice(1):corrected);
   });
   const pluralSubjectRegex=new RegExp("\\b("+pluralSubjects+")\\s+(am|is|was|has|does|doesn't|isn't|wasn't|"+Object.keys(singularToPlural).sort((a,b)=>b.length-a.length).join("|")+")\\b","gi");
   apply(pluralSubjectRegex,(m,subject,verb)=>{
    const v=verb.toLowerCase();
-   const corrected=({am:"are",is:"are",was:"were",has:"have",does:"do",doesn't:"don't",isn't:"aren't",wasn't:"weren't"}[v]||singularToPlural[v]||verb);
+   const corrected=({am:"are",is:"are",was:"were",has:"have",does:"do","doesn't":"don't","isn't":"aren't","wasn't":"weren't"}[v]||singularToPlural[v]||verb);
    return subject+" "+(verb===verb.toUpperCase()?corrected.toUpperCase():verb[0]===verb[0].toUpperCase()?corrected[0].toUpperCase()+corrected.slice(1):corrected);
   });
   // Add third-person -s for clear singular noun subjects, and remove it for clear plurals.
