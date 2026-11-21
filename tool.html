@@ -279,7 +279,7 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   /[ \t]{2,}/g,/\s+([,.!?;:])/g,/([,.!?;:])(?=[A-Za-z])/g,
   /(^|[.!?]\s+|\n\s*)([a-z])/g
  ];
- highlightRules.push(/\\b(yesterday\\s*,?\\s+I\\s+go)\\b/gi,/\\b(doesn't|does not)\\s+[a-z]+s\\b/gi,/\\b(we|they)\\s+was\\b/gi,/\\b(prices|people|students|children|books|shops|cars|days|friends)\\s+is\\b/gi,/\\b(she|he)\\s+say\\b/gi,/\\b(shopkeeper|teacher|doctor|driver)\\s+give\\b/gi,/\\b(its)\\s+(?=a\\b)/gi,/\\bI\\s+didn't\\s+go\\s+there\\s+before\\b/gi);
+ highlightRules.push(/\\b(yesterday\\s*,?\\s+I\\s+go)\\b/gi,/\\b(doesn't|does not)\\s+[a-z]+s\\b/gi,/\\b(we|they)\\s+was\\b/gi,/\\b(prices|people|students|children|books|shops|cars|days|friends)\\s+is\\b/gi,/\\b(she|he)\\s+say\\b/gi,/\\b(shopkeeper|teacher|doctor|driver)\\s+give\\b/gi,/\\b(its)\\s+(?=a\\b)/gi,/\\bI\\s+didn't\\s+go\\s+there\\s+before\\b/gi,/\\bIt's\\s+a\\s+beautiful\\s+day\\s+and\\b/gi);
  function preserveCase(word,replacement){
   if(word===word.toUpperCase())return replacement.toUpperCase();
   if(word[0]===word[0].toUpperCase())return replacement[0].toUpperCase()+replacement.slice(1);
@@ -335,6 +335,7 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   apply(/\\b(shopkeeper|teacher|doctor|driver)\\s+give\\b/gi,(match,subject)=>subject+' gave');
   apply(/\\b(its)\\s+(?=a\\b)/gi,()=>"it's ");
   apply(/\\bI\\s+didn't\\s+go\\s+there\\s+before\\b/gi,()=>"I had never been there before");
+  apply(/\\bIt's\\s+a\\s+beautiful\\s+day\\s+and\\b/gi,()=>"It was a beautiful day, and");
   return {text:value,changes};
  }
  function highlight(text){
