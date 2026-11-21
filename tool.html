@@ -417,8 +417,8 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   apply(/\b(afraid from)\b/gi,()=>'afraid of');
   apply(/\b(angry on)\b/gi,()=>'angry with');
   apply(/\b(look forward for)\b/gi,()=>'look forward to');
-  apply(/\balthough\s+([^.!?]+?),?\s+but\b/gi,(m,clause)=>preserveCase(m.slice(0,1),'although')+' '+clause.trim()+',');
-  apply(/\bbecause\s+([^.!?]+?),?\s+so\b/gi,(m,clause)=>preserveCase(m.slice(0,1),'because')+' '+clause.trim()+',');
+  apply(/\balthough\s+([^.!?]+?),?\s+but\b/gi,(m,clause)=>(m[0]===m[0].toUpperCase()?'Although':'although')+' '+clause.trim()+',');
+  apply(/\bbecause\s+([^.!?]+?),?\s+so\b/gi,(m,clause)=>(m[0]===m[0].toUpperCase()?'Because':'because')+' '+clause.trim()+',');
   apply(/\b(could of|should of|would of|must of|might of)\b/gi,m=>m.replace(/\s+of$/i,' have'));
 
   // Additional common agreement, tense, noun and verb-pattern corrections.
