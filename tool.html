@@ -346,41 +346,39 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   apply(typoPattern,match=>preserveCase(match,spelling[match.toLowerCase()]));
 
   // Singular and plural subject-verb agreement: common pronouns and clear noun subjects.
-  const singularSubjects="(?:he|she|it|this|that|everyone|everybody|someone|somebody|anyone|nobody|each|either|neither|the\\\\s+(?:boy|girl|man|woman|child|person|student|teacher|doctor|player|friend|brother|sister|mother|father|father|waiter|shopkeeper|driver|manager|dog|cat|bird|car|bus|train|shop|school|company|team|family|government|baby|worker|farmer|visitor|customer|book|house|room|city|country|shopkeeper)|(?:my|your|his|her|our)\\\\s+(?:brother|sister|mother|father|friend|teacher|student|son|daughter|dog|cat|child|cousin))";
-  const pluralSubjects="(?:we|they|you|these|those|both|many|several|few|people|children|men|women|students|teachers|doctors|players|friends|brothers|sisters|parents|waiters|shopkeepers|drivers|managers|dogs|cats|birds|cars|buses|trains|shops|schools|companies|teams|families|babies|workers|farmers|visitors|customers|books|houses|rooms|cities|countries|my\\\\s+(?:friends|parents|brothers|sisters|children|cousins)|the\\\\s+(?:boys|girls|men|women|children|people|students|teachers|doctors|players|friends|brothers|sisters|parents|waiters|shopkeepers|drivers|managers|dogs|cats|birds|cars|buses|trains|shops|schools|companies|teams|families|workers|farmers|visitors|customers|books|houses|rooms|cities|countries))";
+  const singularSubjects="(?:he|she|it|this|that|everyone|everybody|someone|somebody|anyone|nobody|each|either|neither|the\\s+(?:boy|girl|man|woman|child|person|student|teacher|doctor|player|friend|brother|sister|mother|father|waiter|shopkeeper|driver|manager|dog|cat|bird|car|bus|train|shop|school|company|team|family|government|baby|worker|farmer|visitor|customer|book|house|room|city|country)|(?:my|your|his|her|our)\\s+(?:brother|sister|mother|father|friend|teacher|student|son|daughter|dog|cat|child|cousin))";
+  const pluralSubjects="(?:we|they|you|these|those|both|many|several|few|people|children|men|women|students|teachers|doctors|players|friends|brothers|sisters|parents|waiters|shopkeepers|drivers|managers|dogs|cats|birds|cars|buses|trains|shops|schools|companies|teams|families|babies|workers|farmers|visitors|customers|books|houses|rooms|cities|countries|my\\s+(?:friends|parents|brothers|sisters|children|cousins)|the\\s+(?:boys|girls|men|women|children|people|students|teachers|doctors|players|friends|brothers|sisters|parents|waiters|shopkeepers|drivers|managers|dogs|cats|birds|cars|buses|trains|shops|schools|companies|teams|families|workers|farmers|visitors|customers|books|houses|rooms|cities|countries))";
   const agreementVerbForms={
-   goes:"go",does:"do",has:"have",is:"are",was:"were",doesn't:"don't",isn't:"aren't",wasn't:"weren't",
-   says:"say",takes:"take",makes:"make",comes:"come",eats:"eat",writes:"write",plays:"play",watches:"watch",
-   studies:"study",likes:"like",wants:"want",needs:"need",knows:"know",works:"work",lives:"live",runs:"run",
-   walks:"walk",speaks:"speak",drives:"drive",tries:"try",carries:"carry",cries:"cry",flies:"fly",
-   buys:"buy",chooses:"choose",gives:"give",spends:"spend",arrives:"arrive",looks:"look",brings:"bring",
-   waits:"wait",asks:"ask",tells:"tell",returns:"return",opens:"open",helps:"help",learns:"learn",
-   reads:"read",gets:"get",finds:"find",sells:"sell",meets:"meet",leaves:"leave",feels:"feel",keeps:"keep",
+   goes:"go",does:"do",has:"have",says:"say",takes:"take",makes:"make",comes:"come",eats:"eat",writes:"write",plays:"play",watches:"watch",
+   studies:"study",likes:"like",wants:"want",needs:"need",knows:"know",works:"work",lives:"live",runs:"run",walks:"walk",speaks:"speak",
+   drives:"drive",tries:"try",carries:"carry",cries:"cry",flies:"fly",buys:"buy",chooses:"choose",gives:"give",spends:"spend",
+   arrives:"arrive",looks:"look",brings:"bring",waits:"wait",asks:"ask",tells:"tell",returns:"return",opens:"open",helps:"help",
+   learns:"learn",reads:"read",gets:"get",finds:"find",sells:"sell",meets:"meet",leaves:"leave",feels:"feel",keeps:"keep",
    drinks:"drink",sleeps:"sleep",cooks:"cook",cleans:"clean",washes:"wash",teaches:"teach",catches:"catch"
   };
   const singularToPlural=Object.fromEntries(Object.entries(agreementVerbForms).map(([third,base])=>[third,base]));
   const pluralToSingular={};
   for(const [third,base] of Object.entries(agreementVerbForms)) pluralToSingular[base]=third;
-  const singularSubjectRegex=new RegExp("\\\\b("+singularSubjects+")\\\\s+(am|are|were|have|do|don't|isn't|aren't|wasn't|weren't|"+Object.keys(pluralToSingular).sort((a,b)=>b.length-a.length).join("|")+")\\\\b","gi");
+  const singularSubjectRegex=new RegExp("\\b("+singularSubjects+")\\s+(am|are|were|have|do|don't|isn't|aren't|wasn't|weren't|"+Object.keys(pluralToSingular).sort((a,b)=>b.length-a.length).join("|")+")\\b","gi");
   apply(singularSubjectRegex,(m,subject,verb)=>{
    const v=verb.toLowerCase();
    const corrected=({am:"is",are:"is",were:"was",have:"has",do:"does",don't:"doesn't",isn't:"isn't",aren't:"isn't",wasn't:"wasn't",weren't:"wasn't"}[v]||pluralToSingular[v]||verb);
    return subject+" "+(verb===verb.toUpperCase()?corrected.toUpperCase():verb[0]===verb[0].toUpperCase()?corrected[0].toUpperCase()+corrected.slice(1):corrected);
   });
-  const pluralSubjectRegex=new RegExp("\\\\b("+pluralSubjects+")\\\\s+(am|is|was|has|does|doesn't|isn't|wasn't|"+Object.keys(singularToPlural).sort((a,b)=>b.length-a.length).join("|")+")\\\\b","gi");
+  const pluralSubjectRegex=new RegExp("\\b("+pluralSubjects+")\\s+(am|is|was|has|does|doesn't|isn't|wasn't|"+Object.keys(singularToPlural).sort((a,b)=>b.length-a.length).join("|")+")\\b","gi");
   apply(pluralSubjectRegex,(m,subject,verb)=>{
    const v=verb.toLowerCase();
    const corrected=({am:"are",is:"are",was:"were",has:"have",does:"do",doesn't:"don't",isn't:"aren't",wasn't:"weren't"}[v]||singularToPlural[v]||verb);
    return subject+" "+(verb===verb.toUpperCase()?corrected.toUpperCase():verb[0]===verb[0].toUpperCase()?corrected[0].toUpperCase()+corrected.slice(1):corrected);
   });
-  // Correct agreement in simple present for clear singular/plural noun subjects.
-  apply(/\\b(the|a|an|my|your|his|her|our|this|that)\\s+([a-z]+)\\s+(go|do|have|say|take|make|come|eat|write|play|watch|study|try|buy|choose|give|spend|arrive|look|bring|wait|ask|tell|return|open|help|learn|read|find|sell|meet|leave|feel|keep|drink|sleep|cook|clean|wash|teach|catch)\\b/gi,
+  // Add third-person -s for clear singular noun subjects, and remove it for clear plurals.
+  apply(/\b(the|a|an|my|your|his|her|our|this|that)\s+([a-z]+)\s+(go|do|have|say|take|make|come|eat|write|play|watch|study|try|buy|choose|give|spend|arrive|look|bring|wait|ask|tell|return|open|help|learn|read|find|sell|meet|leave|feel|keep|drink|sleep|cook|clean|wash|teach|catch)\b/gi,
    (m,det,noun,verb)=>{
-    if(/s$/i.test(noun)||/^(these|those|many|several|few)$/i.test(det))return m;
+    if(/s$/i.test(noun))return m;
     const third=pluralToSingular[verb.toLowerCase()];
     return third?det+" "+noun+" "+third:m;
    });
-  apply(/\\b(the|my|your|our|their|these|those)\\s+([a-z]+s)\\s+(goes|does|has|says|takes|makes|comes|eats|writes|plays|watches|studies|tries|buys|chooses|gives|spends|arrives|looks|brings|waits|asks|tells|returns|opens|helps|learns|reads|finds|sells|meets|leaves|feels|keeps|drinks|sleeps|cooks|cleans|washes|teaches|catches)\\b/gi,
+  apply(/\b(the|my|your|our|their|these|those)\s+([a-z]+s)\s+(goes|does|has|says|takes|makes|comes|eats|writes|plays|watches|studies|tries|buys|chooses|gives|spends|arrives|looks|brings|waits|asks|tells|returns|opens|helps|learns|reads|finds|sells|meets|leaves|feels|keeps|drinks|sleeps|cooks|cleans|washes|teaches|catches)\b/gi,
    (m,det,noun,verb)=>det+" "+noun+" "+(agreementVerbForms[verb.toLowerCase()]||verb));
 
   // Resolve the user's tested past-time narrative before general present-tense rules.
