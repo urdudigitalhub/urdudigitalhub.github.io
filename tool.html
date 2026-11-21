@@ -412,6 +412,15 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   const progressiveForms={go:"going",goes:"going",went:"going",come:"coming",comes:"coming",came:"coming",run:"running",runs:"running",ran:"running",eat:"eating",eats:"eating",ate:"eating",play:"playing",plays:"playing",played:"playing",work:"working",works:"working",walk:"walking",walks:"walking",talk:"talking",talks:"talking",wait:"waiting",waits:"waiting",look:"looking",looks:"looking",watch:"watching",watches:"watching",read:"reading",reads:"reading",write:"writing",writes:"writing",drive:"driving",drives:"driving",sleep:"sleeping",sleeps:"sleeping",sit:"sitting",sits:"sitting",swim:"swimming",swims:"swimming",study:"studying",studies:"studying",cook:"cooking",cooks:"cooking",dance:"dancing",dances:"dancing",smile:"smiling",smiles:"smiling",make:"making",makes:"making",take:"taking",takes:"taking",give:"giving",gives:"giving",live:"living",lives:"living",move:"moving",moves:"moving",have:"having",has:"having"};
   apply(/\b(am|is|are|was|were)\s+(goes|went|comes|came|runs|ran|eats|ate|plays|played|works|walks|talks|waits|looks|watches|reads|writes|drives|sleeps|sits|swims|studies|cooks|dances|smiles|makes|takes|gives|lives|moves|has)\b/gi,
    (m,aux,verb)=>aux+" "+preserveVerbCase(verb,progressiveForms[verb.toLowerCase()]||verb));
+  // Extend common auxiliary patterns: questions, -s forms, and base verbs after be.
+  baseAfterAux.sings="sing";baseAfterAux.likes="like";baseAfterAux.wants="want";baseAfterAux.needs="need";baseAfterAux.knows="know";
+  baseAfterAux.works="work";baseAfterAux.lives="live";baseAfterAux.runs="run";baseAfterAux.walks="walk";baseAfterAux.speaks="speak";
+  baseAfterAux.drives="drive";baseAfterAux.carries="carry";baseAfterAux.cries="cry";baseAfterAux.flies="fly";
+  apply(/\b(does|do|did)\s+(he|she|it|I|you|we|they|[A-Z][a-z]+)\s+(goes|does|has|says|takes|makes|comes|eats|writes|plays|sings|likes|wants|needs|knows|works|lives|runs|walks|speaks|drives|tries|carries|cries|flies|went|ate|saw|wrote|came|took|bought|made|gave|found|ran|spoke|drank|slept)\b/gi,
+   (m,aux,subject,verb)=>aux+" "+subject+" "+preserveVerbCase(verb,baseAfterAux[verb.toLowerCase()]||verb));
+  progressiveForms.play="playing";progressiveForms.sing="singing";progressiveForms.like="liking";progressiveForms.go="going";
+  apply(/\b(am|is|are|was|were)\s+(go|play|sing|eat|write|read|work|walk|talk|wait|look|watch|drive|sleep|sit|swim|study|cook|dance|smile|make|take|give|live|move|have)\b/gi,
+   (m,aux,verb)=>aux+" "+preserveVerbCase(verb,progressiveForms[verb.toLowerCase()]||verb));
   // Infinitive marker "to" is followed by the base form.
   apply(/\bto\s+(goes|does|has|says|takes|makes|comes|eats|writes|plays|watches|studies|tries|buys|chooses|gives|spends|arrives|looks|brings|waits|asks|tells|returns|opens|helps|learns|reads|gets|finds|sells|meets|leaves|feels|keeps|drinks|sleeps|cooks|cleans|washes|teaches|catches)\b/gi,
    (m,verb)=>"to "+preserveVerbCase(verb,baseAfterAux[verb.toLowerCase()]||verb));
