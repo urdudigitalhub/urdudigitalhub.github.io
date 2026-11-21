@@ -482,11 +482,22 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   apply(pastSentenceRegex,(m,cue,between,subject,verb)=>m.replace(new RegExp("\\b"+verb+"$","i"),pastMap[verb.toLowerCase()]||verb));
   // Past narrative continuation: only use sequence clauses when the same paragraph has an explicit past-time anchor.
   const hasPastTimeAnchor=/\b(?:yesterday|last\s+(?:week|night|year|month|morning|evening|monday|tuesday|wednesday|thursday|friday|saturday|sunday)|\d+\s+(?:day|week|month|year)s?\s+ago|(?:in|during)\s+(?:19|20)\d{2})\b/i.test(value);
-  const narrativePastMap=Object.assign({},pastMap,{eat:"ate",eats:"ate",play:"played",plays:"played",run:"ran",runs:"ran"});
+  const narrativePastMap=Object.assign({},pastMap,{
+   eat:"ate",eats:"ate",drink:"drank",drinks:"drank",sleep:"slept",sleeps:"slept",play:"played",plays:"played",
+   run:"ran",runs:"ran",make:"made",makes:"made",find:"found",finds:"found",speak:"spoke",speaks:"spoke",
+   swim:"swam",swims:"swam",break:"broke",breaks:"broke",build:"built",builds:"built",teach:"taught",teaches:"taught",
+   catch:"caught",catches:"caught",fall:"fell",falls:"fell",feel:"felt",feels:"felt",hear:"heard",hears:"heard",
+   hold:"held",holds:"held",keep:"kept",keeps:"kept",lose:"lost",loses:"lost",pay:"paid",pays:"paid",
+   sell:"sold",sells:"sold",stand:"stood",stands:"stood",understand:"understood",understands:"understood",
+   win:"won",wins:"won",bring:"brought",brings:"brought",leave:"left",leaves:"left",meet:"met",meets:"met"
+  });
   const narrativeVerb=Object.keys(narrativePastMap).sort((a,b)=>b.length-a.length).join("|");
   const toPast=verb=>narrativePastMap[verb.toLowerCase()]||verb;
   if(hasPastTimeAnchor){
    const narrativeSubject="(?:I|we|they|he|she|my\\s+(?:brother|sister|mother|father|aunt|uncle|cousin)|the\\s+(?:waiter|shopkeeper|teacher|student|driver|doctor|manager))";
+   // Expand clear time-cue matching to common irregular verbs while staying sentence-local.
+   const expandedPastSentenceRegex=new RegExp("\\b("+pastCues+")\\b([^.!?\\n]*?)\\b("+pastSubject+")\\s+("+narrativeVerb+")\\b","gi");
+   apply(expandedPastSentenceRegex,(m,cue,between,subject,verb)=>m.replace(new RegExp("\\b"+verb+"$","i"),toPast(verb)));
    // A clear sequence marker can carry the established past narrative into that sentence.
    apply(new RegExp("\\b((?:after\\s+that|later\\s+that\\s+day|soon\\s+after(?:\\s+that)?))(,?)\\s*("+narrativeSubject+")\\s+("+narrativeVerb+")\\b([^.!?\\n]*)","gi"),
     (m,sequence,comma,subject,verb,tail)=>{
