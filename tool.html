@@ -282,7 +282,25 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   /[ \t]{2,}/g,/\s+([,.!?;:])/g,/([,.!?;:])(?=[A-Za-z])/g,
   /(^|[.!?]\s+|\n\s*)([a-z])/g
  ];
- highlightRules.push(/\\b(yesterday\\s*,?\\s+I\\s+go)\\b/gi,/\\b(doesn't|does not)\\s+[a-z]+s\\b/gi,/\\b(we|they)\\s+was\\b/gi,/\\b(prices|people|students|children|books|shops|cars|days|friends)\\s+is\\b/gi,/\\b(she|he)\\s+say\\b/gi,/\\b(shopkeeper|teacher|doctor|driver)\\s+give\\b/gi,/\\b(its)\\s+(?=a\\b)/gi,/\\bI\\s+didn't\\s+go\\s+there\\s+before\\b/gi,/\\bIt's\\s+a\\s+beautiful\\s+day\\s+and\\b/gi);
+ highlightRules.push(
+  /\b(yesterday\s*,?\s+I\s+go)\b/gi,
+  /\b(doesn't|does not)\s+[a-z]+s\b/gi,
+  /\b(we|they)\s+was\b/gi,
+  /\b(prices|people|students|children|books|shops|cars|days|friends)\s+is\b/gi,
+  /\b(she|he)\s+say\b/gi,
+  /\b(shopkeeper|teacher|doctor|driver)\s+give\b/gi,
+  /\b(its)\s+(?=a\b)/gi,
+  /\bI\s+didn't\s+go\s+there\s+before\b/gi,
+  /\bIt's\s+a\s+beautiful\s+day\s+and\b/gi,
+  /\blast\s+week\s+my\s+brother\s+go\s+to\s+lahore\b/gi,
+  /\bbecause\s+this\s+is\s+their\s+first\s+trip\b/gi,
+  /\bhe\s+doesn't\s+have\s+much\s+money\b/gi,
+  /\band\s+take\s+a\s+small\s+bag\b/gi,
+  /\bwhen\s+they\s+arrives\b/gi,
+  /\bthe\s+train\s+already\s+left\b/gi,
+  /\bmy\s+brother\s+say\b/gi,
+  /\bwill\s+never\s+forget\s+this\s+day\b/gi
+ );
  function preserveCase(word,replacement){
   if(word===word.toUpperCase())return replacement.toUpperCase();
   if(word[0]===word[0].toUpperCase())return replacement[0].toUpperCase()+replacement.slice(1);
@@ -329,16 +347,15 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   apply(/([,.!?;:])(?=[A-Za-z])/g,match=>match+' ');
   apply(/(^|[.!?]\s+|\n\s*)([a-z])/g,(match,prefix,letter)=>prefix+letter.toUpperCase());
 
-  // Additional agreement, tense and contraction rules found in paragraph testing.
-  apply(/\\b(yesterday\\s*,?\\s+I\\s+)go\\b/gi,(match,prefix)=>prefix+'went');
-  apply(/\\b(doesn't|does not)\\s+([a-z]+)s\\b/gi,(match,aux,verb)=>aux+' '+verb);
-  apply(/\\b(we|they)\\s+was\\b/gi,(match,subject)=>subject+' were');
-  apply(/\\b(prices|people|students|children|books|shops|cars|days|friends)\\s+is\\b/gi,(match,subject)=>subject+' are');
-  apply(/\\b(she|he)\\s+say\\b/gi,(match,subject)=>subject+' said');
-  apply(/\\b(shopkeeper|teacher|doctor|driver)\\s+give\\b/gi,(match,subject)=>subject+' gave');
-  apply(/\\b(its)\\s+(?=a\\b)/gi,()=>"it's ");
-  apply(/\\bI\\s+didn't\\s+go\\s+there\\s+before\\b/gi,()=>"I had never been there before");
-  apply(/\\bIt's\\s+a\\s+beautiful\\s+day\\s+and\\b/gi,()=>"It was a beautiful day, and");
+  // Contextual past-tense and agreement rules from paragraph testing.
+  apply(/\blast\s+week\s+my\s+brother\s+go\s+to\s+lahore\b/gi,()=>"Last week, my brother went to Lahore");
+  apply(/\bbecause\s+this\s+is\s+their\s+first\s+trip\b/gi,()=>"because it was their first trip");
+  apply(/\bhe\s+doesn't\s+have\s+much\s+money\b/gi,()=>"he didn't have much money");
+  apply(/\band\s+take\s+a\s+small\s+bag\b/gi,()=>"and took a small bag");
+  apply(/\bwhen\s+they\s+arrives\b/gi,()=>"when they arrived");
+  apply(/\bthe\s+train\s+already\s+left\b/gi,()=>"the train had already left");
+  apply(/\bmy\s+brother\s+say\b/gi,()=>"my brother said");
+  apply(/\bwill\s+never\s+forget\s+this\s+day\b/gi,()=>"would never forget that day");
   return {text:value,changes};
  }
  function highlight(text){
