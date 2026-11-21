@@ -313,7 +313,7 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   /\b(did|didn't|did not)\s+(went|ate|saw|wrote|came|took|bought|thought|made|gave|found|ran|spoke|drank|slept|broke|chose|drove|forgot|knew|left|read|rode|sent|sat|stood|swam|told|wore|won)\b/gi,
   /\b(can|could|should|would|will|must|may|might)\s+(goes|does|has|says|takes|makes|comes|eats|writes|plays|watches|studies|likes|wants|needs|knows|works|lives|runs|walks|speaks|drives|tries|carries|cries|flies)\b/gi,
   /\b(informations|advices|furnitures|luggages|homeworks|equipments)\b/gi,
-  /\b(on yesterday|on tomorrow|on today|married with|different than|bored from|good in|afraid from|angry on|look forward for)\b/gi,
+  /\b(on yesterday|on tomorrow|on today|look forward for)\b/gi,
   /\b(between you and I|according to me|at night time)\b/gi,
   /\b(more easier|more faster|more stronger|more cheaper)\b/gi,
   /\b(he|she|it|this|that)\s+(are|were)\b/gi,
@@ -420,12 +420,7 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   apply(/\b(according to me)\b/gi,()=>'in my opinion');
   apply(/\b(on yesterday|on tomorrow|on today)\b/gi,m=>m.toLowerCase().replace('on ',''));
   apply(/\b(at night time)\b/gi,()=>'at night');
-  apply(/\b(married with)\b/gi,()=>'married to');
-  apply(/\b(different than)\b/gi,()=>'different from');
-  apply(/\b(bored from)\b/gi,()=>'bored with');
-  apply(/\b(good in)\b/gi,()=>'good at');
   apply(/\b(afraid from)\b/gi,()=>'afraid of');
-  apply(/\b(angry on)\b/gi,()=>'angry with');
   apply(/\b(look forward for)\b/gi,()=>'look forward to');
   apply(/\balthough\s+([^.!?]+?),?\s+but\b/gi,(m,clause)=>(m[0]===m[0].toUpperCase()?'Although':'although')+' '+clause.trim()+',');
   apply(/\bbecause\s+([^.!?]+?),?\s+so\b/gi,(m,clause)=>(m[0]===m[0].toUpperCase()?'Because':'because')+' '+clause.trim()+',');
