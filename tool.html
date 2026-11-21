@@ -250,10 +250,11 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   langauge:'language',studing:'studying',calender:'calendar',
   acheive:'achieve',succesful:'successful',responsibile:'responsible',
   neccessary:'necessary',embarass:'embarrass',throught:'through',graet:'great',
-  hy:'hey',hou:'how',arre:'are'
+  hy:'hey',hou:'how',arre:'are',buyed:'bought',dont:"don't"
  };
  const rules=[
-  /\b(teh|recieve|beleive|seperate|definately|becuase|freind|thier|alot|occured|untill|goverment|enviroment|adress|writting|begining|tommorow|wich|langauge|studing|calender|acheive|succesful|responsibile|neccessary|embarass|throught|graet|hy|hou|arre)\b/gi,
+  /\b(teh|recieve|beleive|seperate|definately|becuase|freind|thier|alot|occured|untill|goverment|enviroment|adress|writting|begining|tommorow|wich|langauge|studing|calender|acheive|succesful|responsibile|neccessary|embarass|throught|graet|hy|hou|arre|buyed|dont)\b/gi,
+  /\b(don't\s+gave|I\s+tell|and\s+give\s+me)\b/gi,
   /\b(\w+)\s+\1\b/gi,/\bi\b/g,
   /\bI\s+(is|are|has)\b/gi,
   /\b(he|she|it)\s+(are|have)\b/gi,
@@ -277,6 +278,9 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
    apply(regex,match=>preserveCase(match,right));
   }
   apply(/\bHey\s+how\s+are\s+you\b[.!?]?/gi,()=>'Hey, how are you?');
+  apply(/\bdon't\s+gave\b/gi,()=>"didn't give");
+  apply(/\bI\s+tell\b/gi,()=> 'I told');
+  apply(/\band\s+give\s+me\b/gi,()=> 'and gave me');
   apply(/\b(\w+)\s+\1\b/gi,(match,word)=>word);
   apply(/\bi\b/g,()=>'I');
   apply(/\bI\s+is\b/gi,()=>'I am');
