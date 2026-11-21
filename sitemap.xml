@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://urdudigitalhub.github.io/</loc></url>
-  <url><loc>https://urdudigitalhub.github.io/tool.html?tool=converter</loc></url>
-  <url><loc>https://urdudigitalhub.github.io/tool.html?tool=reverseTool</loc></url>
-  <url><loc>https://urdudigitalhub.github.io/tool.html?tool=urduKeyboard</loc></url>
-  <url><loc>https://urdudigitalhub.github.io/tool.html?tool=typingTest</loc></url>
-  <url><loc>https://urdudigitalhub.github.io/tool.html?tool=wordCounter</loc></url>
-  <url><loc>https://urdudigitalhub.github.io/tool.html?tool=textCleaner</loc></url>
+  <url><loc>https://urdudigitalhub.github.io/tool.html</loc></url>
   <url><loc>https://urdudigitalhub.github.io/about.html</loc></url>
   <url><loc>https://urdudigitalhub.github.io/contact.html</loc></url>
   <url><loc>https://urdudigitalhub.github.io/privacy.html</loc></url>
@@ -16,7 +11,8 @@
   <url><loc>https://urdudigitalhub.github.io/urdu-image-to-text.html</loc></url>
   <url><loc>https://urdudigitalhub.github.io/urdu-fonts-download.html</loc></url>
   <url><loc>https://urdudigitalhub.github.io/inpage-keyboard-shortcuts.html</loc></url>
-  <url><loc>https://urdudigitalhub.github.io/tool.html?tool=englishProofreader</loc></url>
   <url><loc>https://urdudigitalhub.github.io/image-compressor.html</loc></url>
   <url><loc>https://urdudigitalhub.github.io/image-resizer.html</loc></url>
+  <url><loc>https://urdudigitalhub.github.io/images-to-pdf.html</loc></url>
+  <url><loc>https://urdudigitalhub.github.io/pdf-to-images.html</loc></url>
 </urlset>
