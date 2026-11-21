@@ -85,6 +85,13 @@ const fileInput=document.getElementById('inpageFile');
 const status=document.getElementById('inpageStatus');
 let parserPromise=null;
 function setStatus(message,isError){status.textContent=message;status.style.color=isError?'#b42318':'#59636e';}
+function normalizeLegacyUrdu(text){
+ return text
+  .replace(/\u06CC\u0626/g,'\u0626')
+  .replace(/\u0621(?=[\u0621-\u064A\u066E-\u06D3])/g,'\u0626')
+  .replace(/\u06D2(?=[\u0621-\u064A\u066E-\u06D3])/g,'\u06CC')
+  .normalize('NFC');
+}
 async function loadParser(){
  if(!parserPromise){
   parserPromise=Promise.all([
@@ -120,7 +127,8 @@ fileInput.addEventListener('change',async function(){
   const decoded=version===3?libs.decoder.decodeV3(stream):libs.decoder.decodeV1V2(stream);
   const filtered=libs.decoder.filterParagraphsWithMeta(decoded.paragraphs||[],decoded.paragraphMeta||[]);
   const paragraphs=filtered.paragraphs||[];
-  const extracted=paragraphs.join('\n');
+  const rawText=paragraphs.join('\n');
+  const extracted=version===1||version===2?normalizeLegacyUrdu(rawText):rawText;
   if(!extracted.trim())throw new Error('File se readable text nahi mila. Mumkin hai file unsupported ya image/layout based ho.');
   input.value=extracted;
   setStatus('Text extract ho gaya ('+paragraphs.length+' paragraphs, InPage '+version+'). PDF banane se pehle neeche matn ko zaroor check karein. Formatting, images aur columns preserve nahi hote.',false);
