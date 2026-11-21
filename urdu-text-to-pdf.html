@@ -85,6 +85,24 @@ const fileInput=document.getElementById('inpageFile');
 const status=document.getElementById('inpageStatus');
 let parserPromise=null;
 function setStatus(message,isError){status.textContent=message;status.style.color=isError?'#b42318':'#59636e';}
+function restoreLegacyHadithNumbers(stream,text){
+ const marker=[0x04,0x89,0x04,0x8B,0x04,0xA4,0x04,0x86,0x04,0x20,0x04,0xA0,0x04,0x9F,0x04,0x82,0x04,0x8E,0x04,0x20];
+ const numbers=[];
+ for(let i=0;i<=stream.length-marker.length;i++){
+  let matched=true;
+  for(let j=0;j<marker.length;j++){if(stream[i+j]!==marker[j]){matched=false;break;}}
+  if(!matched)continue;
+  let k=i+marker.length;
+  const start=k;
+  while(k<stream.length&&stream[k]>=0x30&&stream[k]<=0x39)k++;
+  if(k>start&&stream[k]===0x04&&stream[k+1]===0x20)numbers.push(String.fromCharCode(...stream.slice(start,k)));
+  i=k-1;
+ }
+ const phraseCount=(text.match(/حدیث\\s*نمبر/g)||[]).length;
+ if(!numbers.length||numbers.length!==phraseCount)return text;
+ let index=0;
+ return text.replace(/حدیث(\\s*)نمبر/g,function(match,space){return match+' '+numbers[index++];});
+}
 function normalizeLegacyUrdu(text){
  return text
   .replace(/\u06CC\u0626/g,'\u0626')
@@ -128,7 +146,8 @@ fileInput.addEventListener('change',async function(){
   const filtered=libs.decoder.filterParagraphsWithMeta(decoded.paragraphs||[],decoded.paragraphMeta||[]);
   const paragraphs=filtered.paragraphs||[];
   const rawText=paragraphs.join('\n');
-  const extracted=version===1||version===2?normalizeLegacyUrdu(rawText):rawText;
+  const withNumbers=version===1||version===2?restoreLegacyHadithNumbers(stream,rawText):rawText;
+  const extracted=version===1||version===2?normalizeLegacyUrdu(withNumbers):withNumbers;
   if(!extracted.trim())throw new Error('File se readable text nahi mila. Mumkin hai file unsupported ya image/layout based ho.');
   input.value=extracted;
   setStatus('Text extract ho gaya ('+paragraphs.length+' paragraphs, InPage '+version+'). PDF banane se pehle neeche matn ko zaroor check karein. Formatting, images aur columns preserve nahi hote.',false);
