@@ -251,7 +251,7 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   langauge:'language',studing:'studying',calender:'calendar',
   acheive:'achieve',succesful:'successful',responsibile:'responsible',
   neccessary:'necessary',embarass:'embarrass',throught:'through',graet:'great',
-  hy:'hey',hou:'how',arre:'are',buyed:'bought',dont:"don't"
+  hy:'hey',hou:'how',arre:'are',yo:'you',buyed:'bought',dont:"don't"
  };
  const rules=[
   /\b(teh|recieve|beleive|seperate|definately|becuase|freind|thier|alot|occured|untill|goverment|enviroment|adress|writting|begining|tommorow|wich|langauge|studing|calender|acheive|succesful|responsibile|neccessary|embarass|throught|graet|hy|hou|arre|buyed|dont)\b/gi,
@@ -278,7 +278,7 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
    const regex=new RegExp('\\b'+wrong+'\\b','gi');
    apply(regex,match=>preserveCase(match,right));
   }
-  apply(/\bHey\s+how\s+are\s+you\b[.!?]?/gi,()=>'Hey, how are you?');
+  apply(/\b(hi|hey)\s+how\s+are\s+you\b[.!?]?/gi,(match,greeting)=>preserveCase(greeting,greeting)+', how are you?');
   apply(/\bdon't\s+gave\b/gi,()=>"didn't give");
   apply(/\bI\s+tell\b/gi,()=> 'I told');
   apply(/\band\s+give\s+me\b/gi,()=> 'and gave me');
