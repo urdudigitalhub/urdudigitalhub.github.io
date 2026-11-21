@@ -148,7 +148,7 @@ fileInput.addEventListener('change',async function(){
   const rawText=paragraphs.join('\n');
   const withNumbers=version===1||version===2?restoreLegacyHadithNumbers(stream,rawText):rawText;
   const extracted=version===1||version===2?normalizeLegacyUrdu(withNumbers):withNumbers;
-  const correctedText=extracted.replace(/(حدیث\\s*نمبر\\s*\\d+)\\s*،\\s*/g,'$1، ');
+  const correctedText=extracted.replace(/(حدیث\s*نمبر\s*\d+)\s*،\s*/g,'$1، ');
   if(!correctedText.trim())throw new Error('File se readable text nahi mila. Mumkin hai file unsupported ya image/layout based ho.');
   input.value=correctedText;
   setStatus('Text extract ho gaya ('+paragraphs.length+' paragraphs, InPage '+version+'). PDF banane se pehle neeche matn ko zaroor check karein. Formatting, images aur columns preserve nahi hote.',false);
