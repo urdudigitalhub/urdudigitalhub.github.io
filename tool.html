@@ -115,7 +115,7 @@ body.tool-page .tool-panel{display:none!important}body.tool-page .tool-panel.act
 <label for="proofreaderInput">English Paragraph Grammar &amp; Spell Checker</label>
 <p class="note">Paste an English paragraph. The checker reviews spelling, common grammar patterns, punctuation, capitalization and spacing, then shows suggested corrections.</p>
 <textarea class="proofreader-input" id="proofreaderInput" placeholder="Paste or type your English paragraph here..."></textarea>
-<div class="proofreader-word-count" id="proofreaderWordCount" aria-live="polite">Words: 0 / 2,500</div>
+<div class="proofreader-word-count" id="proofreaderWordCount" aria-live="polite">Words: 0 / 2,000</div>
 <div class="buttons"><button class="convert" id="proofreaderCheck" type="button">Check Paragraph</button><button class="clear" id="proofreaderClear" type="button">Clear</button></div>
 <div class="proofreader-count" id="proofreaderCount">No check performed yet</div>
 <label>Highlighted Mistakes</label>
@@ -123,7 +123,7 @@ body.tool-page .tool-panel{display:none!important}body.tool-page .tool-panel.act
 <label style="margin-top:16px" for="proofreaderOutput">Corrected Paragraph</label>
 <textarea class="proofreader-output" id="proofreaderOutput" readonly placeholder="Corrected paragraph will appear here..."></textarea>
 <div class="buttons"><button class="copy" id="proofreaderCopy" type="button">Copy Corrected Paragraph</button></div>
-<p class="proofreader-help">This free checker works with built-in English (US) rules in your browser. It can catch common errors but cannot understand every context like a human editor. Review suggestions before using important text.</p>
+<p class="proofreader-help">This checker uses built-in English (US) rules in your browser to detect common spelling, grammar, tense, agreement, article, preposition and punctuation errors. It may miss context-dependent mistakes or suggest an incorrect change, so review the corrected paragraph before using it.</p>
 </section>
 <section class="card" id="urdu-tools-guide">
 <h2>Free Urdu Online Tools and Typing Practice</h2>
@@ -299,15 +299,28 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   /\bwhen\s+they\s+arrives\b/gi,
   /\bthe\s+train\s+already\s+left\b/gi,
   /\bmy\s+brother\s+say\b/gi,
-  /\\b(he|she|it)\\s+(don't|do not|doesn't)\\s+[a-z]+s\\b/gi,
-  /\\b(he|she|it)\\s+(go|do|have|say|take|make|come|eat|write|play|watch|study)\\b/gi,
-  /\\b(I|you|we|they)\\s+(goes|does|has|says|takes|makes|comes|eats|writes|plays|watches|studies)\\b/gi,
-  /\\b(did|didn't|did not)\\s+(went|ate|saw|wrote|came|took|bought|thought|made|gave|found|ran|spoke|drank|slept|broke|chose|drove|forgot|knew|left|read|rode|sent|sat|stood|swam|told|wore|won)\\b/gi,
-  /\\b(can|could|should|would|will|must|may|might)\\s+(goes|does|has|says|takes|makes|comes|eats|writes|plays|watches|studies)\\b/gi,
-  /\\b(informations|advices|furnitures|luggages|homeworks|equipments)\\b/gi,
-  /\\b(on yesterday|on tomorrow|on today|married with|different than|bored from|good in|afraid from|angry on|look forward for)\\b/gi,
-  /\\b(between you and I|according to me|at night time)\\b/gi,
-  /\\b(more easier|more faster|more stronger|more cheaper)\\b/gi
+  /\b(he|she|it)\s+(don't|do not|doesn't)\s+[a-z]+s\b/gi,
+  /\b(he|she|it)\s+(go|do|have|say|take|make|come|eat|write|play|watch|study)\b/gi,
+  /\b(I|you|we|they)\s+(goes|does|has|says|takes|makes|comes|eats|writes|plays|watches|studies)\b/gi,
+  /\b(did|didn't|did not)\s+(went|ate|saw|wrote|came|took|bought|thought|made|gave|found|ran|spoke|drank|slept|broke|chose|drove|forgot|knew|left|read|rode|sent|sat|stood|swam|told|wore|won)\b/gi,
+  /\b(can|could|should|would|will|must|may|might)\s+(goes|does|has|says|takes|makes|comes|eats|writes|plays|watches|studies)\b/gi,
+  /\b(informations|advices|furnitures|luggages|homeworks|equipments)\b/gi,
+  /\b(on yesterday|on tomorrow|on today|married with|different than|bored from|good in|afraid from|angry on|look forward for)\b/gi,
+  /\b(between you and I|according to me|at night time)\b/gi,
+  /\b(more easier|more faster|more stronger|more cheaper)\b/gi
+
+  /\b(he|she|it|this|that)\s+(are|were)\b/gi,
+  /\b(these|those)\s+(is|was)\b/gi,
+  /\b(did|didn't|did not)\s+(went|ate|saw|wrote|came|took|bought|thought|made|gave|found|ran|spoke|drank|slept|broke|chose|drove|forgot|knew|left|rode|sent|sat|stood|swam|told|wore|won)\b/gi,
+  /\b(has|have|had)\s+(went|ate|saw|wrote|came|took|bought|thought|made|gave|found|ran|spoke|drank|slept|broke|chose|drove|forgot|knew|left|rode|sent|sat|stood|swam|told|wore|won)\b/gi,
+  /\b(every|each)\s+(students|people|children|books|days|friends|cars|teachers)\b/gi,
+  /\b(much)\s+(people|students|children|friends|cars|books)\b/gi,
+  /\b(many)\s+(money|water|milk|sugar|information|advice|furniture|homework)\b/gi,
+  /\b(less)\s+(people|students|children|cars|books|friends)\b/gi,
+  /\b(fewer)\s+(money|water|milk|sugar|information|advice|furniture|homework)\b/gi,
+  /\b(look forward to)\s+(meet|see|visit|hear|work|talk|speak|receive|read|watch)\b/gi,
+  /\b(enjoy|avoid|finish|keep|mind)\s+to\s+(read|write|play|work|study|watch|learn|cook|travel)\b/gi,
+  /\b(in the other hand|due to the fact that)\b/gi,
  );
  function preserveCase(word,replacement){
   if(word===word.toUpperCase())return replacement.toUpperCase();
@@ -359,7 +372,7 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   // Broader common English grammar patterns (rule-based; context-sensitive cases remain suggestions).
   apply(/\b(he|she|it)\s+(don't|do not)\b/gi,(m,sub)=>sub+" doesn't");
   apply(/\b(I|you|we|they)\s+doesn't\b/gi,(m,sub)=>sub+" don't");
-  apply(/\b(he|she|it)\s+doesn't\s+([a-z]+)s\b/gi,(m,sub,verb)=>sub+" doesn't "+verb);
+  apply(/\b(he|she|it)\s+doesn't\s+(goes|does|has|says|takes|makes|comes|eats|writes|plays|watches|studies)\b/gi,(m,sub,verb)=>sub+" doesn't "+({goes:"go",does:"do",has:"have",says:"say",takes:"take",makes:"make",comes:"come",eats:"eat",writes:"write",plays:"play",watches:"watch",studies:"study"}[verb.toLowerCase()]));
 
   apply(/\b(we|they)\s+was\b/gi,(m,sub)=>sub+' were');
   apply(/\b(I)\s+was\b/gi,(m,sub)=>sub+' was');
@@ -399,6 +412,29 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   apply(/\b(because)\s+([^,]+),?\s+so\b/gi,(m,because,clause)=>'because '+clause);
   apply(/\b(could of|should of|would of|must of|might of)\b/gi,m=>m.replace(/\s+of$/i,' have'));
 
+  // Additional common agreement, tense, noun and verb-pattern corrections.
+  apply(/\b(he|she|it|this|that)\s+(are|were)\b/gi,(m,sub,verb)=>sub+(verb.toLowerCase()==="were"?" was":" is"));
+  apply(/\b(these|those)\s+(is|was)\b/gi,(m,sub,verb)=>sub+(verb.toLowerCase()==="was"?" were":" are"));
+  apply(/\b(he|she|it|my brother|my sister|the teacher|the student)\s+(go|do|have|say|take|make|come|eat|write|play|watch|study|try|carry|cry|fly)\b/gi,(m,sub,verb)=>sub+" "+({go:"goes",do:"does",have:"has",say:"says",take:"takes",make:"makes",come:"comes",eat:"eats",write:"writes",play:"plays",watch:"watches",study:"studies",try:"tries",carry:"carries",cry:"cries",fly:"flies"}[verb.toLowerCase()]||verb));
+  apply(/\b(I|you|we|they)\s+(goes|does|has|says|takes|makes|comes|eats|writes|plays|watches|studies|tries|carries|cries|flies)\b/gi,(m,sub,verb)=>sub+" "+({goes:"go",does:"do",has:"have",says:"say",takes:"take",makes:"make",comes:"come",eats:"eat",writes:"write",plays:"play",watches:"watch",studies:"study",tries:"try",carries:"carry",cries:"cry",flies:"fly"}[verb.toLowerCase()]||verb));
+  apply(/\b(can|could|should|would|will|must|may|might)\s+(goes|does|has|says|takes|makes|comes|eats|writes|plays|watches|studies|tries|carries|cries|flies)\b/gi,(m,modal,verb)=>modal+" "+({goes:"go",does:"do",has:"have",says:"say",takes:"take",makes:"make",comes:"come",eats:"eat",writes:"write",plays:"play",watches:"watch",studies:"study",tries:"try",carries:"carry",cries:"cry",flies:"fly"}[verb.toLowerCase()]||verb));
+  apply(/\b(did|didn't|did not)\s+(went|ate|saw|wrote|came|took|bought|thought|made|gave|found|ran|spoke|drank|slept|broke|chose|drove|forgot|knew|left|rode|sent|sat|stood|swam|told|wore|won)\b/gi,(m,aux,verb)=>aux+" "+({went:"go",ate:"eat",saw:"see",wrote:"write",came:"come",took:"take",bought:"buy",thought:"think",made:"make",gave:"give",found:"find",ran:"run",spoke:"speak",drank:"drink",slept:"sleep",broke:"break",chose:"choose",drove:"drive",forgot:"forget",knew:"know",left:"leave",rode:"ride",sent:"send",sat:"sit",stood:"stand",swam:"swim",told:"tell",wore:"wear",won:"win"}[verb.toLowerCase()]));
+  apply(/\b(has|have|had)\s+(went|ate|saw|wrote|came|took|bought|thought|made|gave|found|ran|spoke|drank|slept|broke|chose|drove|forgot|knew|left|rode|sent|sat|stood|swam|told|wore|won)\b/gi,(m,aux,verb)=>aux+" "+({went:"gone",ate:"eaten",saw:"seen",wrote:"written",came:"come",took:"taken",bought:"bought",thought:"thought",made:"made",gave:"given",found:"found",ran:"run",spoke:"spoken",drank:"drunk",slept:"slept",broke:"broken",chose:"chosen",drove:"driven",forgot:"forgotten",knew:"known",left:"left",rode:"ridden",sent:"sent",sat:"sat",stood:"stood",swam:"swum",told:"told",wore:"worn",won:"won"}[verb.toLowerCase()]));
+  apply(/\b(every|each)\s+(students|people|children|books|days|friends|cars|teachers)\b/gi,(m,det,noun)=>det+" "+({students:"student",people:"person",children:"child",books:"book",days:"day",friends:"friend",cars:"car",teachers:"teacher"}[noun.toLowerCase()]));
+  apply(/\b(much)\s+(people|students|children|friends|cars|books)\b/gi,(m,quant,noun)=>"many "+noun);
+  apply(/\b(many)\s+(money|water|milk|sugar|information|advice|furniture|homework)\b/gi,(m,quant,noun)=>"much "+noun);
+  apply(/\b(less)\s+(people|students|children|cars|books|friends)\b/gi,(m,quant,noun)=>"fewer "+noun);
+  apply(/\b(fewer)\s+(money|water|milk|sugar|information|advice|furniture|homework)\b/gi,(m,quant,noun)=>"less "+noun);
+  apply(/\b(informations|advices|furnitures|luggages|homeworks|equipments|feedbacks|researches)\b/gi,m=>({informations:"information",advices:"advice",furnitures:"furniture",luggages:"luggage",homeworks:"homework",equipments:"equipment",feedbacks:"feedback",researches:"research"}[m.toLowerCase()]));
+  apply(/\b(one of the)\s+(best|most|biggest|smallest|greatest)\s+([a-z]+)\b/gi,(m,prefix,adj,noun)=>prefix+" "+adj+" "+(noun.endsWith("s")?noun:noun+"s"));
+  apply(/\b(look forward to)\s+(meet|see|visit|hear|work|talk|speak|receive|read|watch)\b/gi,(m,prefix,verb)=>prefix+" "+({meet:"meeting",see:"seeing",visit:"visiting",hear:"hearing",work:"working",talk:"talking",speak:"speaking",receive:"receiving",read:"reading",watch:"watching"}[verb]));
+  apply(/\b(enjoy|avoid|finish|keep|mind)\s+to\s+(read|write|play|work|study|watch|learn|cook|travel)\b/gi,(m,verb,action)=>verb+" "+({read:"reading",write:"writing",play:"playing",work:"working",study:"studying",watch:"watching",learn:"learning",cook:"cooking",travel:"travelling"}[action]));
+  apply(/\b(in the other hand)\b/gi,()=>"on the other hand");
+  apply(/\b(due to the fact that)\b/gi,()=>"because");
+  apply(/\b(for)\s+(two|three|four|five|six|seven|eight|nine|ten)\s+years?\s+ago\b/gi,(m,prep,num)=>num+" years ago");
+  apply(/\b(since)\s+(two|three|four|five|six|seven|eight|nine|ten)\s+years?\b/gi,(m,prep,num)=>"for "+num+" years");
+  apply(/\b(from)\s+(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\s+to\b/gi,(m,prep,day)=>"from "+day+" to");
+
   // Contextual past-tense and agreement rules from paragraph testing.
   apply(/\blast\s+week\s+my\s+brother\s+go\s+to\s+lahore\b/gi,()=>"Last week, my brother went to Lahore");
   apply(/\bbecause\s+this\s+is\s+their\s+first\s+trip\b/gi,()=>"because it was their first trip");
@@ -437,7 +473,7 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   return html.replace(/\r?\n/g,'<br>');
  }
  const proofreaderInput=$('proofreaderInput');
- const maxProofreaderWords=2500;
+ const maxProofreaderWords=2000;
  const updateProofreaderWordCount=()=>{
   const matches=[...proofreaderInput.value.matchAll(/\S+/g)];
   if(matches.length>maxProofreaderWords){
@@ -447,7 +483,7 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   }
   const count=[...proofreaderInput.value.matchAll(/\S+/g)].length;
   const counter=$('proofreaderWordCount');
-  counter.textContent='Words: '+count.toLocaleString()+' / 2,500'+(count>=maxProofreaderWords?' — Limit reached. Clear to start another article.':'');
+  counter.textContent='Words: '+count.toLocaleString()+' / 2,000'+(count>=maxProofreaderWords?' — Limit reached. Clear to start another article.':'');
   counter.classList.toggle('limit-reached',count>=maxProofreaderWords);
  };
  proofreaderInput.addEventListener('input',updateProofreaderWordCount);
