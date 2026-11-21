@@ -86,6 +86,7 @@ body.tool-page .tool-panel.active-tool{display:block!important}
 .proofreader-preview mark{background:#ffe08a;color:#7a2e00;border-bottom:2px solid #df8b16;border-radius:3px;padding:0 1px}
 .proofreader-output{direction:ltr;text-align:left;font:16px/1.8 Arial,sans-serif;height:220px;background:#f5fbf7}
 .proofreader-help{font-size:13px;color:#626d7a;line-height:1.7;margin:8px 0}
+.proofreader-learning{margin-top:18px;padding:16px;border:1px solid #cbd9ea;border-radius:12px;background:#f7faff}.proofreader-learning h3{margin:0 0 8px;color:#174f78}.proofreader-learning p{font-size:13px;line-height:1.7;color:#596779}.proofreader-learning .learn-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.proofreader-learning label{font-size:14px;margin:8px 0}.proofreader-learning input{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:8px;font:15px Arial,sans-serif;direction:ltr;text-align:left}.proofreader-learning button{font-size:13px;padding:10px 14px}.proofreader-learned-list{margin-top:10px;font-size:13px;color:#43546a;line-height:1.8}.proofreader-learned-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid #e3eaf2}.proofreader-learned-item button{padding:5px 9px;background:#d9485f}@media(max-width:560px){.proofreader-learning .learn-fields{grid-template-columns:1fr}}
 .proofreader-count{display:inline-block;background:#fff4d8;color:#80520a;padding:5px 9px;border-radius:7px;font-size:13px;font-weight:700;margin:8px 0}
 .proofreader-word-count{font-size:13px;color:#526273;font-weight:700;margin:6px 0 12px}
 .proofreader-word-count.limit-reached{color:#b42318}
@@ -123,6 +124,13 @@ body.tool-page .tool-panel{display:none!important}body.tool-page .tool-panel.act
 <label style="margin-top:16px" for="proofreaderOutput">Corrected Paragraph</label>
 <textarea class="proofreader-output" id="proofreaderOutput" readonly placeholder="Corrected paragraph will appear here..."></textarea>
 <div class="buttons"><button class="copy" id="proofreaderCopy" type="button">Copy Corrected Paragraph</button></div>
+<div class="proofreader-learning" id="proofreaderLearning">
+<h3>Teach the Checker</h3>
+<p>If you notice a mistake or an incorrect suggestion, enter the wrong text and its correct form. The checker will remember your approved correction in this browser and apply it in future checks on this device.</p>
+<div class="learn-fields"><div><label for="proofreaderLearnWrong">Incorrect text</label><input id="proofreaderLearnWrong" type="text" maxlength="80" placeholder="e.g. Yoo"></div><div><label for="proofreaderLearnRight">Correct text</label><input id="proofreaderLearnRight" type="text" maxlength="80" placeholder="e.g. You"></div></div>
+<div class="buttons"><button class="convert" id="proofreaderLearnSave" type="button">Save Correction</button><button class="clear" id="proofreaderLearnReset" type="button">Clear My Learning</button></div>
+<p id="proofreaderLearnStatus" aria-live="polite">Your saved corrections: 0</p><div class="proofreader-learned-list" id="proofreaderLearnedList"></div>
+</div>
 <p class="proofreader-help">This checker uses built-in English (US) rules in your browser to detect common spelling, grammar, tense, agreement, article, preposition and punctuation errors. It may miss context-dependent mistakes or suggest an incorrect change, so review the corrected paragraph before using it.</p>
 </section>
 <section class="card" id="urdu-tools-guide">
@@ -246,7 +254,7 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
 (function(){
  const $=id=>document.getElementById(id);
  const spelling={
-  teh:'the',recieve:'receive',beleive:'believe',seperate:'separate',definately:'definitely',
+  yoo:'you',teh:'the',recieve:'receive',beleive:'believe',seperate:'separate',definately:'definitely',
   definately:'definitely',becuase:'because',freind:'friend',thier:'their',alot:'a lot',
   occured:'occurred',untill:'until',goverment:'government',enviroment:'environment',
   adress:'address',writting:'writing',begining:'beginning',tommorow:'tomorrow',wich:'which',
@@ -509,6 +517,18 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
    apply(/\b(had|has|have)\s+not\s+(meet|see|go|do|write|take|eat|give|speak|drive|choose|forget)\b/gi,(m,aux,verb)=>aux+" not "+({meet:"met",see:"seen",go:"gone",do:"done",write:"written",take:"taken",eat:"eaten",give:"given",speak:"spoken",drive:"driven",choose:"chosen",forget:"forgotten"}[verb.toLowerCase()]));
    apply(/\b(may|might|can|could|should|would|will|must)\s+(rains|creates|plans|helps|speaks|goes|does|has|says|takes|makes|comes|eats|writes|plays|watches|studies|tries|buys|chooses|spends|arrives|looks|greets|puts|welcomes|meets|wants|misses|laughs|opens|explains|smiles|returns|compares|offers|brings|orders|prefers|waits|talks|discusses|promises|washes|gets|shows|listens|learns|sits|enjoys|changes|appears|begins|collects|walks|becomes|unlocks|knows|thanks|agrees|checks|reads|practices|believes|works|remains|achieves|visits|stays|unpacks|answers|thinks|remembers|sends)\b/gi,(m,modal,verb)=>modal+" "+(verbBase[verb.toLowerCase()]||verb.replace(/s$/,"")));
   }
+  // Apply user-approved learning last, so a saved correction can fix a pattern missed by built-in rules.
+  const learnedRules=loadLearnedCorrections();
+  learnedRules.sort((a,b)=>b.wrong.length-a.wrong.length);
+  for(const rule of learnedRules){
+   const escaped=Array.from(rule.wrong).map(ch=>'.*+?^\${}()|[]\\'.includes(ch)?'\\'+ch:ch).join('');
+   const learnedRegex=new RegExp('(^|[^A-Za-z0-9_])('+escaped+')(?=$|[^A-Za-z0-9_])','gi');
+   value=value.replace(learnedRegex,(match,before,found)=>{
+    const replacement=found===found.toUpperCase()?rule.right.toUpperCase():(found[0]===found[0].toUpperCase()?rule.right[0].toUpperCase()+rule.right.slice(1):rule.right);
+    if(found!==replacement){changes++;return before+replacement;}
+    return match;
+   });
+  }
   return {text:value,changes};
  }
  function highlight(text){
@@ -537,6 +557,51 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   html+=escapeHtml(text.slice(position));
   return html.replace(/\r?\n/g,'<br>');
  }
+ const learningStorageKey='udh_english_grammar_learning_v1';
+ function loadLearnedCorrections(){
+  try{
+   const saved=JSON.parse(localStorage.getItem(learningStorageKey)||'[]');
+   return Array.isArray(saved)?saved.filter(x=>x&&typeof x.wrong==='string'&&typeof x.right==='string'&&x.wrong.length<=80&&x.right.length<=80).slice(0,300):[];
+  }catch(error){return [];}
+ }
+ function saveLearnedCorrections(rules){
+  try{localStorage.setItem(learningStorageKey,JSON.stringify(rules.slice(0,300)));return true;}
+  catch(error){return false;}
+ }
+ function renderLearnedCorrections(){
+  const rules=loadLearnedCorrections();
+  $('proofreaderLearnStatus').textContent='Your saved corrections: '+rules.length+' (saved in this browser only)';
+  const list=$('proofreaderLearnedList');
+  list.textContent='';
+  rules.slice().reverse().slice(0,8).forEach(rule=>{
+   const item=document.createElement('div');item.className='proofreader-learned-item';
+   const label=document.createElement('span');label.textContent=rule.wrong+' → '+rule.right;
+   const remove=document.createElement('button');remove.type='button';remove.textContent='Remove';remove.addEventListener('click',()=>{
+    const updated=loadLearnedCorrections().filter(x=>!(x.wrong===rule.wrong&&x.right===rule.right));
+    if(saveLearnedCorrections(updated))renderLearnedCorrections();
+    else $('proofreaderLearnStatus').textContent='Could not update browser storage. Please check browser storage settings.';
+   });
+   item.append(label,remove);list.appendChild(item);
+  });
+ }
+ $('proofreaderLearnSave').addEventListener('click',()=>{
+  const wrong=$('proofreaderLearnWrong').value.trim(),right=$('proofreaderLearnRight').value.trim();
+  if(!wrong||!right){$('proofreaderLearnStatus').textContent='Enter both the incorrect and correct text.';return;}
+  if(wrong.toLowerCase()===right.toLowerCase()){$('proofreaderLearnStatus').textContent='The two entries are the same. Enter a different correction.';return;}
+  if(/[\r\n]/.test(wrong)||/[\r\n]/.test(right)){$('proofreaderLearnStatus').textContent='Please save one word or phrase at a time, without line breaks.';return;}
+  const rules=loadLearnedCorrections().filter(x=>x.wrong.toLowerCase()!==wrong.toLowerCase());
+  rules.unshift({wrong,right});
+  if(!saveLearnedCorrections(rules)){$('proofreaderLearnStatus').textContent='Could not save. Browser storage may be disabled or full.';return;}
+  $('proofreaderLearnWrong').value='';$('proofreaderLearnRight').value='';
+  renderLearnedCorrections();
+  $('proofreaderLearnStatus').textContent='Correction saved. It will be used in your next check on this browser.';
+ });
+ $('proofreaderLearnReset').addEventListener('click',()=>{
+  if(!confirm('Clear all corrections you taught this browser?'))return;
+  try{localStorage.removeItem(learningStorageKey);renderLearnedCorrections();}
+  catch(error){$('proofreaderLearnStatus').textContent='Could not clear browser storage.';}
+ });
+ renderLearnedCorrections();
  const proofreaderInput=$('proofreaderInput');
  const maxProofreaderWords=2000;
  const updateProofreaderWordCount=()=>{
