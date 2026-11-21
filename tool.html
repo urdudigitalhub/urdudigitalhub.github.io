@@ -482,8 +482,6 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   apply(pastSentenceRegex,(m,cue,between,subject,verb)=>m.replace(new RegExp("\\b"+verb+"$","i"),pastMap[verb.toLowerCase()]||verb));
   // Past narrative continuation: only use sequence clauses when the same paragraph has an explicit past-time anchor.
   const hasPastTimeAnchor=/\b(?:yesterday|last\s+(?:week|night|year|month|morning|evening|monday|tuesday|wednesday|thursday|friday|saturday|sunday)|\d+\s+(?:day|week|month|year)s?\s+ago|(?:in|during)\s+(?:19|20)\d{2})\b/i.test(value);
-  if(hasPastTimeAnchor){
-   const narrativeSubject="(?:I|we|they|he|she|my\\s+(?:brother|sister|mother|father|aunt|uncle|cousin)|the\\s+(?:waiter|shopkeeper|teacher|student|driver|doctor|manager))";
   const narrativePastMap=Object.assign({},pastMap,{eat:"ate",eats:"ate",play:"played",plays:"played",run:"ran",runs:"ran"});
   if(hasPastTimeAnchor){
    const narrativeSubject="(?:I|we|they|he|she|my\\s+(?:brother|sister|mother|father|aunt|uncle|cousin)|the\\s+(?:waiter|shopkeeper|teacher|student|driver|doctor|manager))";
