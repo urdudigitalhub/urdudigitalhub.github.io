@@ -396,6 +396,8 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   apply(/\b(he|she|it)\s+weren't\b/gi,(m,sub)=>sub+" wasn't");
   apply(/\b(there|here)\s+is\s+(many|several|few|numerous)\b/gi,(m,loc)=>loc+' are '+m.match(/\s+(many|several|few|numerous)$/i)[1]);
   apply(/\b(each of|one of)\s+(\w+)\s+are\b/gi,(m,prefix,noun)=>prefix+' '+noun+' is');
+  apply(/\b(each of|one of)\s+the\s+([a-z]+)\s+are\b/gi,(m,prefix,noun)=>prefix+" the "+noun+" is");
+  apply(/\b(information|advice|furniture|equipment|homework|luggage|traffic|news)\s+are\b/gi,(m,noun)=>noun+" is");
   apply(/\b(a lot of|lots of)\s+people\s+is\b/gi,()=>'a lot of people are');
   apply(/\b(many|several|few)\s+(people|students|children|books|cars|friends)\s+is\b/gi,(m,quant,noun)=>quant+' '+noun+' are');
   apply(/\b(people|students|children|books|cars|friends)\s+was\b/gi,(m,sub)=>sub+' were');
@@ -430,7 +432,7 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   apply(/\b(could of|should of|would of|must of|might of)\b/gi,m=>m.replace(/\s+of$/i,' have'));
 
   // Additional common agreement, tense, noun and verb-pattern corrections.
-  apply(/\b(he|she|it|this|that)\s+(are|were)\b/gi,(m,sub,verb)=>sub+(verb.toLowerCase()==="were"?" was":" is"));
+  apply(/\b(he|she|it|this|that)\s+are\b/gi,(m,sub)=>sub+" is");
   apply(/\b(these|those)\s+(is|was)\b/gi,(m,sub,verb)=>sub+(verb.toLowerCase()==="was"?" were":" are"));
   apply(/\b(he|she|it|my brother|my sister|the teacher|the student)\s+(go|do|have|say|take|make|come|eat|write|play|watch|study|try|carry|cry|fly)\b/gi,(m,sub,verb)=>sub+" "+({go:"goes",do:"does",have:"has",say:"says",take:"takes",make:"makes",come:"comes",eat:"eats",write:"writes",play:"plays",watch:"watches",study:"studies",try:"tries",carry:"carries",cry:"cries",fly:"flies"}[verb.toLowerCase()]||verb));
   apply(/\b(I|you|we|they)\s+(goes|does|has|says|takes|makes|comes|eats|writes|plays|watches|studies|tries|carries|cries|flies)\b/gi,(m,sub,verb)=>sub+" "+({goes:"go",does:"do",has:"have",says:"say",takes:"take",makes:"make",comes:"come",eats:"eat",writes:"write",plays:"play",watches:"watch",studies:"study",tries:"try",carries:"carry",cries:"cry",flies:"fly"}[verb.toLowerCase()]||verb));
@@ -471,12 +473,9 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   apply(/\b(he|she|it|my brother|my sister|my mother|my father|my aunt|my uncle|my cousin|the waiter|the shopkeeper)\s+doesn't\s+wanted\b/gi,(m,sub)=>sub+" didn't want");
   apply(/\b(he|she|it|my brother|my sister|my mother|my father|my aunt|my uncle|my cousin)\s+didn't\s+(had|has)\b/gi,(m,sub)=>sub+" didn't have");
   apply(/\b(did not|didn't|did)\s+(had|has|was|were)\b/gi,(m,aux,verb)=>aux+" "+({had:"have",has:"have",was:"be",were:"be"}[verb.toLowerCase()]));
-  apply(/\b(was|were)\s+not\s+(arrive|arrived|come|came|reach|reached|go|went)\b/gi,(m,aux,verb)=>"had not "+({arrive:"arrived",arrived:"arrived",come:"come",came:"come",reach:"reached",reached:"reached",go:"gone",went:"gone"}[verb.toLowerCase()]));
   apply(/\b(has|have|had)\s+(forget|forgot|go|went|see|saw|write|wrote|take|took|eat|ate|give|gave|speak|spoke|drive|drove|choose|chose|break|broke|know|knew|leave|left|begin|began|do|did|become|became|show|showed|run|ran|fall|fell|tell|told)\b/gi,(m,aux,verb)=>aux+" "+({forget:"forgotten",forgot:"forgotten",go:"gone",went:"gone",see:"seen",saw:"seen",write:"written",wrote:"written",take:"taken",took:"taken",eat:"eaten",ate:"eaten",give:"given",gave:"given",speak:"spoken",spoke:"spoken",drive:"driven",drove:"driven",choose:"chosen",chose:"chosen",break:"broken",broke:"broken",know:"known",knew:"known",leave:"left",begin:"begun",began:"begun",do:"done",did:"done",become:"become",became:"become",show:"shown",showed:"shown",run:"run",ran:"run",fall:"fallen",fell:"fallen",tell:"told"}[verb.toLowerCase()]));
   apply(/\b(to|not to)\s+(gives|goes|does|has|says|takes|makes|comes|eats|writes|plays|watches|studies|tries|buys|chooses|spends|arrives|looks|greets|puts|welcomes|meets|wants|misses|laughs|opens|explains|smiles|returns|compares|offers|brings|orders|prefers|waits|talks|discusses|promises|washes|gets|shows|listens|learns|sits|enjoys|changes|appears|begins|collects|walks|becomes|unlocks|knows|thanks|agrees|checks|reads|practices|believes|helps|speaks|works|remains|achieves|visits|creates|stays|unpacks|answers|thinks|remembers|sends)\b/gi,(m,prefix,verb)=>prefix+" "+(verbBase[verb.toLowerCase()]||verb));
   apply(/\b(everyone|everybody|someone|somebody|anyone|nobody)\s+(laugh|want|need|have|are|were|help|make|say|think|know|enjoy)\b/gi,(m,sub,verb)=>sub+" "+({laugh:"laughs",want:"wants",need:"needs",have:"has",are:"is",were:"was",help:"helps",make:"makes",say:"says",think:"thinks",know:"knows",enjoy:"enjoys"}[verb.toLowerCase()]));
-  apply(/\b(a|an)\s+(neighbour|neighbour's)\s+garden\b/gi,(m,article,noun)=>"the "+(noun.toLowerCase()==="neighbour's"?"neighbour's":"neighbour's")+" garden");
-  apply(/\b(a|an)\s+chocolate\b/gi,()=>"some chocolate");
   apply(/\b(they|we|you)\s+(was|is)\s+(very\s+)?happy\b/gi,(m,sub,aux,adv)=>sub+" "+(aux.toLowerCase()==="was"?"were":"are")+" "+(adv||"")+"happy");
   apply(/\b(he|she|it|my brother|my sister|my cousin|my uncle|my aunt|my mother|my father)\s+(was|were)\s+(very\s+)?tired\b/gi,(m,sub,aux,adv)=>sub+" "+(aux.toLowerCase()==="were"?"was":aux)+" "+(adv||"")+"tired");
   // Correct clear past-time verb forms when a time marker appears in the same sentence.
