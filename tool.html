@@ -360,7 +360,7 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   apply(/\b(he|she|it)\s+(don't|do not)\b/gi,(m,sub)=>sub+" doesn't");
   apply(/\b(I|you|we|they)\s+doesn't\b/gi,(m,sub)=>sub+" don't");
   apply(/\b(he|she|it)\s+doesn't\s+([a-z]+)s\b/gi,(m,sub,verb)=>sub+" doesn't "+verb);
-  apply(/\b(he|she|it)\s+didn't\s+([a-z]+ed)\b/gi,(m,sub,verb)=>sub+" didn't "+({went:'go'}[verb]||verb.replace(/ied$/,'y').replace(/ed$/,'')));
+
   apply(/\b(we|they)\s+was\b/gi,(m,sub)=>sub+' were');
   apply(/\b(I)\s+was\b/gi,(m,sub)=>sub+' was');
   apply(/\b(you|we|they)\s+wasn't\b/gi,(m,sub)=>sub+" weren't");
@@ -380,7 +380,7 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   apply(/\b(more\s+easier|more\s+faster|more\s+stronger|more\s+cheaper)\b/gi,m=>m.split(/\s+/)[1]);
   apply(/\b(between you and I)\b/gi,()=>'between you and me');
   apply(/\b(me and (he|she|they))\b/gi,(m,whole,other)=>other+' and I');
-  apply(/\b(a|an)\s+(hour|honest|honor|heir)\b/gi,()=>'an $2');
+  apply(/\b(a|an)\s+(hour|honest|honor|heir)\b/gi,(m,article,noun)=>'an '+noun);
   apply(/\b(a)\s+(university|uniform|unique|useful|European|one-time)\b/gi,(m,article,noun)=>'a '+noun);
   apply(/\b(informations|advices|furnitures|luggages|homeworks|equipments)\b/gi,m=>({informations:'information',advices:'advice',furnitures:'furniture',luggages:'luggage',homeworks:'homework',equipments:'equipment'}[m.toLowerCase()]));
   apply(/\b(discuss about|enter into inside|return back|repeat again)\b/gi,m=>({'discuss about':'discuss','enter into inside':'enter','return back':'return','repeat again':'repeat'}[m.toLowerCase()]));
