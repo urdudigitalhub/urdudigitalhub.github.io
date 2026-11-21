@@ -483,7 +483,7 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   const storySubjects="(?:my\\s+brother\\s+and\\s+sister|my\\s+(?:younger\\s+sister|brother|sister|mother|father|aunt|uncle|cousins?|cousin)|the\\s+(?:waiter|shopkeeper|guide|weather|scenery|garden|road|food|traffic|service|trip|ball|train|bus|building|guide|rain|journey)|some\\s+(?:people|pictures|shops)|other\\s+people|many\\s+shops|the\\s+people|the\\s+children|the\\s+farmers|everyone|everybody|we|they|he|she|I|my\\s+cousins|my\\s+uncle)";
   const storyVerbNames=Object.keys(pastForms).sort((a,b)=>b.length-a.length).join("|");
   const storyVerbRegex=new RegExp("\\b("+storySubjects+")\\s+("+storyVerbNames+")\\b","gi");
-  value=value.replace(/[^\\n]+/g,paragraph=>{
+  value=value.replace(/[^\n]+/g,paragraph=>{
    if(!/\\b(yesterday|last\\s+(?:week|night|year|month|morning|evening)|the\\s+next\\s+morning|after\\s+(?:lunch|shopping|a\\s+few\\s+minutes)|in\\s+the\\s+(?:evening|morning)|before\\s+sleeping|during\\s+the\\s+journey|arrived|went|bought|was|were|had|took|said|made|came|left|saw|met|got)\\b/i.test(paragraph))return paragraph;
    return paragraph.replace(storyVerbRegex,(match,subject,verb)=>{
     const replacement=pastForms[verb.toLowerCase()];
