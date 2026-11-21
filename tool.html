@@ -484,7 +484,9 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   const hasPastTimeAnchor=/\b(?:yesterday|last\s+(?:week|night|year|month|morning|evening|monday|tuesday|wednesday|thursday|friday|saturday|sunday)|\d+\s+(?:day|week|month|year)s?\s+ago|(?:in|during)\s+(?:19|20)\d{2})\b/i.test(value);
   if(hasPastTimeAnchor){
    const narrativeSubject="(?:I|we|they|he|she|my\\s+(?:brother|sister|mother|father|aunt|uncle|cousin)|the\\s+(?:waiter|shopkeeper|teacher|student|driver|doctor|manager))";
-   const narrativePastMap=Object.assign({},pastMap,{eat:"ate",eats:"ate",play:"played",plays:"played",run:"ran",runs:"ran"});
+  const narrativePastMap=Object.assign({},pastMap,{eat:"ate",eats:"ate",play:"played",plays:"played",run:"ran",runs:"ran"});
+  if(hasPastTimeAnchor){
+   const narrativeSubject="(?:I|we|they|he|she|my\\s+(?:brother|sister|mother|father|aunt|uncle|cousin)|the\\s+(?:waiter|shopkeeper|teacher|student|driver|doctor|manager))";
    const narrativeVerb=Object.keys(narrativePastMap).sort((a,b)=>b.length-a.length).join("|");
    const toPast=verb=>narrativePastMap[verb.toLowerCase()]||verb;
    // A clear sequence marker can carry the established past narrative into that sentence.
@@ -518,16 +520,16 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
     const pattern=new RegExp("\\b("+subjectPattern+")\\s+("+presentForms+")\\b","gi");
     return sentence.replace(pattern,(m,subject,verb)=>{
      if(stativeNegative.test(sentence)&&/^(?:he|she|it|my\\s+(?:brother|sister|mother|father|aunt|uncle|cousin))$/i.test(subject)&&/^(?:likes|like|loves|love|hates|hate|prefers|prefer|believes|believe|knows|know|owns|own|wants|want|needs|need)$/i.test(verb))return m;
-     return subject+" "+(pastMap[verb.toLowerCase()]||verb);
+     return subject+" "+(narrativePastMap[verb.toLowerCase()]||verb);
     });
    });
    // Modal verbs always take the base form, even inside a past-time story.
    apply(/\b(should|could|would|might|must|can|will|may)\s+(goes|does|has|says|takes|makes|comes|eats|writes|plays|watches|studies|tries|buys|chooses|gives|spends|arrives|looks|brings|waits|asks|tells|returns)\b/gi,(m,modal,verb)=>modal+" "+({goes:"go",does:"do",has:"have",says:"say",takes:"take",makes:"make",comes:"come",eats:"eat",writes:"write",plays:"play",watches:"watch",studies:"study",tries:"try",buys:"buy",chooses:"choose",gives:"give",spends:"spend",arrives:"arrive",looks:"look",brings:"bring",waits:"wait",asks:"ask",tells:"tell",returns:"return"}[verb.toLowerCase()]||verb));
-   // Preserve clear habitual preferences even when the surrounding paragraph narrates a past event.
-   apply(/\b(my\s+brother|my\s+sister|my\s+mother|my\s+father)\s+didn't\s+like\s+expensive\s+things\b/gi,(m,subject)=>subject+" doesn't like expensive things");
    // A past event after a past predicate takes "didn't", not "doesn't".
    value=value.replace(/([^.!?\\n]*\\b(?:was|were|went|came|bought|said|told|ate|arrived|returned|looked|played|worked)\\b[^.!?\\n]*?)\\b(doesn't|does\\s+not)\\s+([a-z]+)\\b/gi,
     (m,before,negative,verb)=>before+"didn't "+verb);
+   // Preserve clear habitual preferences even when the surrounding paragraph narrates a past event.
+   apply(/\b(my\s+brother|my\s+sister|my\s+mother|my\s+father)\s+didn't\s+like\s+expensive\s+things\b/gi,(m,subject)=>subject+" doesn't like expensive things");
   }
   // Avoid changing an entire paragraph's tense from a single time-word; tense corrections above stay local to clear sentence patterns.
   // Apply user-approved learning last, so a saved correction can fix a pattern missed by built-in rules.
