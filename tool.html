@@ -87,6 +87,8 @@ body.tool-page .tool-panel.active-tool{display:block!important}
 .proofreader-output{direction:ltr;text-align:left;font:16px/1.8 Arial,sans-serif;height:220px;background:#f5fbf7}
 .proofreader-help{font-size:13px;color:#626d7a;line-height:1.7;margin:8px 0}
 .proofreader-count{display:inline-block;background:#fff4d8;color:#80520a;padding:5px 9px;border-radius:7px;font-size:13px;font-weight:700;margin:8px 0}
+.proofreader-word-count{font-size:13px;color:#526273;font-weight:700;margin:6px 0 12px}
+.proofreader-word-count.limit-reached{color:#b42318}
 
 body.tool-page .tool-panel{display:none!important}body.tool-page .tool-panel.active-tool{display:block!important}body.tool-page header{padding:20px 15px}body.tool-page footer{padding-top:20px}
 
@@ -113,6 +115,7 @@ body.tool-page .tool-panel{display:none!important}body.tool-page .tool-panel.act
 <label for="proofreaderInput">English Paragraph Grammar &amp; Spell Checker</label>
 <p class="note">Paste an English paragraph. The checker reviews spelling, common grammar patterns, punctuation, capitalization and spacing, then shows suggested corrections.</p>
 <textarea class="proofreader-input" id="proofreaderInput" placeholder="Paste or type your English paragraph here..."></textarea>
+<div class="proofreader-word-count" id="proofreaderWordCount" aria-live="polite">Words: 0 / 2,500</div>
 <div class="buttons"><button class="convert" id="proofreaderCheck" type="button">Check Paragraph</button><button class="clear" id="proofreaderClear" type="button">Clear</button></div>
 <div class="proofreader-count" id="proofreaderCount">No check performed yet</div>
 <label>Highlighted Mistakes</label>
@@ -364,8 +367,24 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   html+=escapeHtml(text.slice(position));
   return html.replace(/\r?\n/g,'<br>');
  }
+ const proofreaderInput=$('proofreaderInput');
+ const maxProofreaderWords=2500;
+ const updateProofreaderWordCount=()=>{
+  const matches=[...proofreaderInput.value.matchAll(/\\S+/g)];
+  if(matches.length>maxProofreaderWords){
+   const lastAllowed=matches[maxProofreaderWords-1];
+   proofreaderInput.value=proofreaderInput.value.slice(0,lastAllowed.index+lastAllowed[0].length);
+   proofreaderInput.setSelectionRange(proofreaderInput.value.length,proofreaderInput.value.length);
+  }
+  const count=[...proofreaderInput.value.matchAll(/\\S+/g)].length;
+  const counter=$('proofreaderWordCount');
+  counter.textContent='Words: '+count.toLocaleString()+' / 2,500'+(count>=maxProofreaderWords?' — Limit reached. Clear to start another article.':'');
+  counter.classList.toggle('limit-reached',count>=maxProofreaderWords);
+ };
+ proofreaderInput.addEventListener('input',updateProofreaderWordCount);
+ updateProofreaderWordCount();
  $('proofreaderCheck').addEventListener('click',()=>{
-  const original=$('proofreaderInput').value;
+  const original=proofreaderInput.value;
   if(!original.trim()){alert('Please paste an English paragraph first.');return;}
   const result=fix(original);
   $('proofreaderPreview').innerHTML=highlight(original);
@@ -373,7 +392,7 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   $('proofreaderCount').textContent=result.changes+' possible correction(s) applied. Yellow highlights show detected patterns.';
  });
  $('proofreaderClear').addEventListener('click',()=>{
-  $('proofreaderInput').value='';$('proofreaderOutput').value='';
+  proofreaderInput.value='';updateProofreaderWordCount();$('proofreaderOutput').value='';
   $('proofreaderPreview').textContent='Your paragraph with highlighted mistakes will appear here.';
   $('proofreaderCount').textContent='No check performed yet';
  });
