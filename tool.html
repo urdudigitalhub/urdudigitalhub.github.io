@@ -370,13 +370,13 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
  const proofreaderInput=$('proofreaderInput');
  const maxProofreaderWords=2500;
  const updateProofreaderWordCount=()=>{
-  const matches=[...proofreaderInput.value.matchAll(/\\S+/g)];
+  const matches=[...proofreaderInput.value.matchAll(/\S+/g)];
   if(matches.length>maxProofreaderWords){
    const lastAllowed=matches[maxProofreaderWords-1];
    proofreaderInput.value=proofreaderInput.value.slice(0,lastAllowed.index+lastAllowed[0].length);
    proofreaderInput.setSelectionRange(proofreaderInput.value.length,proofreaderInput.value.length);
   }
-  const count=[...proofreaderInput.value.matchAll(/\\S+/g)].length;
+  const count=[...proofreaderInput.value.matchAll(/\S+/g)].length;
   const counter=$('proofreaderWordCount');
   counter.textContent='Words: '+count.toLocaleString()+' / 2,500'+(count>=maxProofreaderWords?' — Limit reached. Clear to start another article.':'');
   counter.classList.toggle('limit-reached',count>=maxProofreaderWords);
