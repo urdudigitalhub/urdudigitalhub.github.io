@@ -98,10 +98,10 @@ function restoreLegacyHadithNumbers(stream,text){
   if(k>start&&stream[k]===0x04&&stream[k+1]===0x20)numbers.push(String.fromCharCode(...stream.slice(start,k)));
   i=k-1;
  }
- const phraseCount=(text.match(/حدیث\\s*نمبر/g)||[]).length;
+ const phraseCount=(text.match(/حدیث\s*نمبر/g)||[]).length;
  if(!numbers.length||numbers.length!==phraseCount)return text;
  let index=0;
- return text.replace(/حدیث(\\s*)نمبر/g,function(match,space){return match+' '+numbers[index++];});
+ return text.replace(/حدیث(\s*)نمبر/g,function(match,space){return match+' '+numbers[index++];});
 }
 function normalizeLegacyUrdu(text){
  return text
