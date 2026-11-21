@@ -249,10 +249,11 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
   begining:'beginning',tommorow:'tomorrow',wich:'which',
   langauge:'language',studing:'studying',calender:'calendar',
   acheive:'achieve',succesful:'successful',responsibile:'responsible',
-  neccessary:'necessary',embarass:'embarrass',throught:'through',graet:'great'
+  neccessary:'necessary',embarass:'embarrass',throught:'through',graet:'great',
+  hy:'hey',hou:'how',arre:'are'
  };
  const rules=[
-  /\b(teh|recieve|beleive|seperate|definately|becuase|freind|thier|alot|occured|untill|goverment|enviroment|adress|writting|begining|tommorow|wich|langauge|studing|calender|acheive|succesful|responsibile|neccessary|embarass|throught|graet)\b/gi,
+  /\b(teh|recieve|beleive|seperate|definately|becuase|freind|thier|alot|occured|untill|goverment|enviroment|adress|writting|begining|tommorow|wich|langauge|studing|calender|acheive|succesful|responsibile|neccessary|embarass|throught|graet|hy|hou|arre)\b/gi,
   /\b(\w+)\s+\1\b/gi,/\bi\b/g,
   /\bI\s+(is|are|has)\b/gi,
   /\b(he|she|it)\s+(are|have)\b/gi,
@@ -275,6 +276,7 @@ document.getElementById('resetTyping').addEventListener('click',resetTyping);
    const regex=new RegExp('\\b'+wrong+'\\b','gi');
    apply(regex,match=>preserveCase(match,right));
   }
+  apply(/\bHey\s+how\s+are\s+you\b[.!?]?/gi,()=>'Hey, how are you?');
   apply(/\b(\w+)\s+\1\b/gi,(match,word)=>word);
   apply(/\bi\b/g,()=>'I');
   apply(/\bI\s+is\b/gi,()=>'I am');
